@@ -7,10 +7,13 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.practicum.explorewithme.stats.dto.EndpointHitDTO;
@@ -29,6 +32,8 @@ class StatsClientTest {
     private MockWebServer mockWebServer;
     private StatsClient statsClient;
     private ObjectMapper objectMapper;
+    @Mock
+    private DiscoveryClient discoveryClient;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @BeforeEach
@@ -39,7 +44,7 @@ class StatsClientTest {
         if (baseUrl.endsWith("/")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
-        statsClient = new StatsClient(baseUrl, WebClient.builder());
+        statsClient = new StatsClient(baseUrl, WebClient.builder(), discoveryClient, new RetryTemplate());
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules(); // поддержка LocalDateTime
     }

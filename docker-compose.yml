@@ -3,7 +3,7 @@ services:
     build: ./stat/stat-server
     container_name: stat-server
     ports:
-      - "9090:9090"
+      - "9091:9091"
     depends_on:
       stat-db:
         condition: service_healthy
@@ -30,10 +30,10 @@ services:
 
 
   ewm-service:
-    build: ./ewm-main-service
+    build: ./core/ewm-main-service
     container_name: main-service
     ports:
-      - "8080:8080"
+      - "8081:8081"
     depends_on:
       main-db:
         condition: service_healthy
