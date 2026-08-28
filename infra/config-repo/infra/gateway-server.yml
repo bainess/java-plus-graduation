@@ -8,8 +8,8 @@ spring:
         locator:
           enabled: false
       routes:
-        - id: ewm-main-service-read
-          uri: lb://ewm-main-service
+        - id: main-service-read
+          uri: lb://main-service
           predicates:
             - Path=/categories/**,/compilations/**,/events/**,/users/**,/locations/**,/admin/**
             - Method=GET
@@ -27,8 +27,8 @@ spring:
                   firstBackoff: 100ms
                   maxBackoff: 500ms
 
-        - id: ewm-main-service
-          uri: lb://ewm-main-service
+        - id: main-service
+          uri: lb://main-service
           predicates:
             - Path=/categories/**,/compilations/**,/events/**,/users/**,/locations/**,/admin/**
 
