@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: ewm-main-service
+    name: main-service
   datasource:
     url: jdbc:postgresql://localhost:5433/ewm_main_db
     username: postgres
