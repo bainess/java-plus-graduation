@@ -9,6 +9,7 @@ import ru.practicum.explorewithme.service.request.service.EventRequestService;
 
 import java.util.List;
 
+
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/users/{userId}/events/{eventId}/requests")
