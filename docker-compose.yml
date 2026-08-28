@@ -27,8 +27,6 @@ services:
       timeout: 5s
       retries: 10
 
-
-
   ewm-service:
     build: ./core/ewm-main-service
     container_name: main-service
