@@ -13,6 +13,7 @@ spring:
     init:
       mode: always
       continue-on-error: true
+
   jpa:
     datasource-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
