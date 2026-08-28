@@ -21,15 +21,3 @@ spring:
     show-sql: true
 stats-server:
   id: stats-server
-
-#eureka:
-#  instance:
-#    prefer-ip-address: true
-#    ip-address: 127.0.0.1
-#  cloud:
-#    gateway:
-#      routes:
-#        -id: stats-route
-#        uri: lb://stats-service
-#        predicates:
-#          - Path=/stats/**
