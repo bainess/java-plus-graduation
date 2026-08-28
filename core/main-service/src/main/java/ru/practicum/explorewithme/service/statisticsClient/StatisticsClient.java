@@ -35,7 +35,9 @@ public class StatisticsClient {
         try {
             return discoveryClient.getInstances(statsServiceId)
                     .getFirst();
-        } catch (Exception e) {
+        } catch (StatsServerUnavailable e) {
+            throw e;
+        } catch (RuntimeException e) {
             throw new StatsServerUnavailable(
                     "Error discovering statistics service with id " + statsServiceId,
                     e
@@ -53,6 +55,7 @@ public class StatisticsClient {
         restClientBuilder.build().post().uri(uri).body(hit).retrieve().toBodilessEntity();
 
     }
+
     public ResponseEntity<List<ViewStatsDTO>> getStats(
             LocalDateTime start,
             LocalDateTime end,
@@ -84,7 +87,8 @@ public class StatisticsClient {
                     return uriBuilder.build();
                 })
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<List<ViewStatsDTO>>() {});
+                .toEntity(new ParameterizedTypeReference<List<ViewStatsDTO>>() {
+                });
     }
 }
 
