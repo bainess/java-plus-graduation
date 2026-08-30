@@ -35,7 +35,7 @@ public class StatisticsClient {
         try {
             return discoveryClient.getInstances(statsServiceId)
                     .getFirst();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw new StatsServerUnavailable(
                     "Error discovering statistics service with id " + statsServiceId,
                     e
