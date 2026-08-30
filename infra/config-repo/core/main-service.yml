@@ -1,0 +1,28 @@
+server:
+  port: 0
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true # Принудительно применять кодировку для запросов и ответов
+      enabled: true
+
+spring:
+  application:
+    name: main-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ewm_main_db
+    username: postgres
+    password: 54321
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+
+  jpa:
+    datasource-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+stats-server:
+  id: stats-server
