@@ -68,7 +68,6 @@ public class CompilationServiceImpl implements CompilationService {
             compilation.setEvents(events);
         }
 
-        compilation = compilationRepository.save(compilation);
         log.info("Обновлена подборка: {}", compilation.getId());
         return CompilationMapper.toDto(compilation);
     }

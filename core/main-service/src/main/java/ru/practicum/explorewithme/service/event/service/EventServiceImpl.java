@@ -3,8 +3,6 @@ package ru.practicum.explorewithme.service.event.service;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 import ru.practicum.explorewithme.service.category.dal.CategoryRepository;
 import ru.practicum.explorewithme.service.event.dal.EventRepository;
 import ru.practicum.explorewithme.service.event.dto.*;
@@ -31,8 +28,6 @@ import ru.practicum.explorewithme.service.request.dto.ConfirmedRequestsCount;
 import ru.practicum.explorewithme.service.request.enums.ParticipationRequestStatus;
 import ru.practicum.explorewithme.service.statisticsClient.StatisticsClient;
 import ru.practicum.explorewithme.service.user.dal.UserRepository;
-import ru.practicum.explorewithme.stats.client.StatsClient;
-import ru.practicum.explorewithme.stats.client.exception.StatsServerUnavailable;
 import ru.practicum.explorewithme.stats.dto.ViewStatsDTO;
 
 import java.time.LocalDateTime;
@@ -47,7 +42,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -56,6 +50,7 @@ public class EventServiceImpl implements EventService {
     private final EventRequestRepository requestRepository;
     private final StatisticsClient statsClient;
     private final LocationRepository locationRepository;
+    final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     @Override
@@ -180,7 +175,6 @@ public class EventServiceImpl implements EventService {
         }
 
         EventMapper.updateEntityFromAdminRequest(request, event);
-        eventRepository.save(event);
         log.debug("Событие обновлено администратором");
         Long confirmed = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED).longValue();
         return EventMapper.toFullDto(event, confirmed, 0L);
@@ -267,7 +261,6 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("Событие должно быть опубликовано");
         }
 
-
         //        получает статистику по событию
         long views = getViews(eventId, event);
         event.setViews(views);
@@ -278,7 +271,6 @@ public class EventServiceImpl implements EventService {
     }
 
     private Long getViews(Long eventId, EventFullDto event) {
-        final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(event.getCreatedOn(), FORMATTER);
         long views = 0;
         try {
@@ -289,6 +281,5 @@ public class EventServiceImpl implements EventService {
             log.error("Ошибка при получении статистики для события {}: {}", eventId, e.getMessage());
         }
         return views;
-
     }
 }

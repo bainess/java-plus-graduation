@@ -35,8 +35,6 @@ public class StatisticsClient {
         try {
             return discoveryClient.getInstances(statsServiceId)
                     .getFirst();
-        } catch (StatsServerUnavailable e) {
-            throw e;
         } catch (RuntimeException e) {
             throw new StatsServerUnavailable(
                     "Error discovering statistics service with id " + statsServiceId,
@@ -52,7 +50,12 @@ public class StatisticsClient {
 
     public void saveHit(EndpointHitDTO hit) {
         URI uri = makeUri("/hit");
-        restClientBuilder.build().post().uri(uri).body(hit).retrieve().toBodilessEntity();
+        restClientBuilder.build()
+                .post()
+                .uri(uri)
+                .body(hit)
+                .retrieve()
+                .toBodilessEntity();
 
     }
 
