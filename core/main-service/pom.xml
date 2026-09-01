@@ -102,6 +102,12 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>ru.practicum</groupId>
+            <artifactId>shared-dto</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- WebFlux (нужен для WebClient в клиенте) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -3,9 +3,9 @@ package ru.practicum.explorewithme.service.request.dal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.explorewithme.service.request.dto.ConfirmedRequestsCount;
-import ru.practicum.explorewithme.service.request.enums.ParticipationRequestStatus;
 import ru.practicum.explorewithme.service.request.model.ParticipationRequest;
+import ru.practicum.explorewithme.shareddto.dto.request.ConfirmedRequestsCount;
+import ru.practicum.explorewithme.shareddto.enums.ParticipationRequestStatus;
 
 import java.util.List;
 import java.util.Optional;

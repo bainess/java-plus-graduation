@@ -13,11 +13,12 @@ import ru.practicum.explorewithme.service.request.dal.EventRequestRepository;
 import ru.practicum.explorewithme.service.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.explorewithme.service.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.service.request.dto.ParticipationRequestDto;
-import ru.practicum.explorewithme.service.request.enums.ParticipationRequestStatus;
 import ru.practicum.explorewithme.service.request.mapper.ParticipationRequestMapper;
 import ru.practicum.explorewithme.service.request.model.ParticipationRequest;
 import ru.practicum.explorewithme.service.user.dal.UserRepository;
 import ru.practicum.explorewithme.service.user.model.User;
+import ru.practicum.explorewithme.shareddto.dto.request.ConfirmedRequestsCount;
+import ru.practicum.explorewithme.shareddto.enums.ParticipationRequestStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -198,5 +199,15 @@ public class EventRequestServiceImpl implements EventRequestService {
         eventRequestRepository.delete(request);
         request.setStatus(ParticipationRequestStatus.CANCELED);
         return ParticipationRequestMapper.toDto(request);
+    }
+
+    @Override
+    public Integer getConfirmedRequests(Long eventId) {
+        return eventRequestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
+    }
+
+    @Override
+    public List<ConfirmedRequestsCount> getConfirmedRequestsByEventIds(List<Long> eventIds) {
+        return eventRequestRepository.countConfirmedRequestsByEventIds(eventIds);
     }
 }

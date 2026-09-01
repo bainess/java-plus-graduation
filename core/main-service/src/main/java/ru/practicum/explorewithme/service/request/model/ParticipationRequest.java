@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.explorewithme.service.event.model.Event;
-import ru.practicum.explorewithme.service.request.enums.ParticipationRequestStatus;
 import ru.practicum.explorewithme.service.user.model.User;
+import ru.practicum.explorewithme.shareddto.enums.ParticipationRequestStatus;
 
 import java.time.LocalDateTime;
 
