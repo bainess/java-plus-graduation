@@ -2,7 +2,7 @@ package ru.practicum.explorewithme.service.request.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.explorewithme.service.request.enums.ParticipationRequestStatus;
+import ru.practicum.explorewithme.shareddto.enums.ParticipationRequestStatus;
 
 import java.util.List;
 

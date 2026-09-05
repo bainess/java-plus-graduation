@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.service.user.dto.NewUserRequest;
 import ru.practicum.explorewithme.service.user.dto.UserDto;
 import ru.practicum.explorewithme.service.user.service.UserService;
+import ru.practicum.explorewithme.shareddto.dto.user.UserShortDto;
 
 import java.util.List;
 
@@ -30,6 +31,11 @@ public class UserController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return userService.getUsers(ids, from, size);
+    }
+
+    @GetMapping("/{userId}")
+    public UserShortDto getUserShortDto(@PathVariable Long userId) {
+        return userService.getUserShortDto(userId);
     }
 
     @DeleteMapping("/{userId}")

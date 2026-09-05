@@ -1,10 +1,8 @@
 package ru.practicum.explorewithme.service.compilation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import ru.practicum.explorewithme.service.event.dto.EventShortDto;
+import lombok.*;
+import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
+
 
 import java.util.List;
 
@@ -16,5 +14,8 @@ public class CompilationDto {
     private Long id;
     private String title;
     private Boolean pinned;
+    @Setter
+    @Getter
     private List<EventShortDto> events;
+
 }

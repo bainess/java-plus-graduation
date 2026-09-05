@@ -4,20 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explorewithme.service.event.dal.EventRepository;
-import ru.practicum.explorewithme.service.event.enums.EventState;
-import ru.practicum.explorewithme.service.event.model.Event;
-import ru.practicum.explorewithme.service.exception.ConflictException;
-import ru.practicum.explorewithme.service.exception.NotFoundException;
 import ru.practicum.explorewithme.service.request.dal.EventRequestRepository;
 import ru.practicum.explorewithme.service.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.explorewithme.service.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.service.request.dto.ParticipationRequestDto;
-import ru.practicum.explorewithme.service.request.enums.ParticipationRequestStatus;
+import ru.practicum.explorewithme.service.request.feign.client.EventClient;
 import ru.practicum.explorewithme.service.request.mapper.ParticipationRequestMapper;
 import ru.practicum.explorewithme.service.request.model.ParticipationRequest;
 import ru.practicum.explorewithme.service.user.dal.UserRepository;
 import ru.practicum.explorewithme.service.user.model.User;
+import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
+import ru.practicum.explorewithme.shareddto.dto.request.ConfirmedRequestsCount;
+import ru.practicum.explorewithme.shareddto.enums.EventState;
+import ru.practicum.explorewithme.shareddto.enums.ParticipationRequestStatus;
+import ru.practicum.explorewithme.shareddto.exception.ConflictException;
+import ru.practicum.explorewithme.shareddto.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,17 +30,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventRequestServiceImpl implements EventRequestService {
 
-    private final EventRepository eventRepository;
+    private final EventClient eventClient;
     private final EventRequestRepository eventRequestRepository;
     private final UserRepository userRepository;
 
     @Override
     public List<ParticipationRequestDto> getEventRequests(Long userId, Long eventId) {
         log.info("Получение заявок на событие id={} пользователя id={}", eventId, userId);
-        Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
+        EventFullDto event = eventClient.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено или недоступно"));
-        List<ParticipationRequest> requests = eventRequestRepository
-                .findAllByEventIdAndEventInitiatorId(eventId, userId);
+        List<ParticipationRequest> requests =  eventRequestRepository
+                            .findAllByEventId(eventId);
         return requests.stream()
                 .map(ParticipationRequestMapper::toDto)
                 .collect(Collectors.toList());
@@ -51,7 +52,7 @@ public class EventRequestServiceImpl implements EventRequestService {
                                                               EventRequestStatusUpdateRequest request) {
         log.info("Изменение статуса заявок на событие id={} пользователем id={}", eventId, userId);
 
-        Event event = getEventAndValidateOwnership(userId, eventId);
+        EventFullDto event = getEventAndValidateOwnership(userId, eventId);
         validateRequestPrerequisites(event);
 
         ParticipationRequestStatus newStatus = validateNewStatus(request.getStatus());
@@ -71,12 +72,12 @@ public class EventRequestServiceImpl implements EventRequestService {
         return buildResult(confirmed, rejected);
     }
 
-    private Event getEventAndValidateOwnership(Long userId, Long eventId) {
-        return eventRepository.findByIdAndInitiatorId(eventId, userId)
+    private EventFullDto getEventAndValidateOwnership(Long userId, Long eventId) {
+        return eventClient.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено или недоступно"));
     }
 
-    private void validateRequestPrerequisites(Event event) {
+    private void validateRequestPrerequisites(EventFullDto event) {
         if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             throw new ConflictException("Подтверждение заявок не требуется для данного события");
         }
@@ -98,7 +99,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         return requests;
     }
 
-    private void processConfirmation(Event event, List<ParticipationRequest> requests,
+    private void processConfirmation(EventFullDto event, List<ParticipationRequest> requests,
                                      List<ParticipationRequest> confirmed, List<ParticipationRequest> rejected) {
         int currentConfirmed = eventRequestRepository.countByEventIdAndStatus(
                 event.getId(), ParticipationRequestStatus.CONFIRMED);
@@ -160,9 +161,9 @@ public class EventRequestServiceImpl implements EventRequestService {
             throw new ConflictException("Запрос на добавление пользователя" + userId + "на событие " + eventId + " уже существует");
         }
         User participant = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь " + userId + " не найден"));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие " + eventId + " не найдено"));
+        EventFullDto event = eventClient.findEventById(eventId).orElseThrow(() -> new NotFoundException("Событие " + eventId + " не найдено"));
 
-        if (event.getInitiator().getId().equals(userId))
+        if (event.getInitiator().equals(userId))
             throw new ConflictException("Инициатор не может присылать запрос на свое событие");
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
@@ -170,7 +171,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         }
         ParticipationRequest request = ParticipationRequest.builder()
                 .requester(participant)
-                .event(event)
+                .eventId(event.getId())
                 .created(LocalDateTime.now())
                 .build();
 
@@ -198,5 +199,16 @@ public class EventRequestServiceImpl implements EventRequestService {
         eventRequestRepository.delete(request);
         request.setStatus(ParticipationRequestStatus.CANCELED);
         return ParticipationRequestMapper.toDto(request);
+    }
+
+    @Override
+    public Integer getConfirmedRequests(Long eventId) {
+        return eventRequestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
+    }
+
+    @Override
+    public List<ConfirmedRequestsCount> getConfirmedRequestsByEventIds(List<Long> eventIds) {
+        log.info("number of confirmed requests {}", eventRequestRepository.countConfirmedRequestsByEventIds(eventIds).size());
+        return eventRequestRepository.countConfirmedRequestsByEventIds(eventIds);
     }
 }
