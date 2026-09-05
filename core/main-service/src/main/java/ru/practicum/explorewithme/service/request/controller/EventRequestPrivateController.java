@@ -7,7 +7,6 @@ import ru.practicum.explorewithme.service.request.dto.EventRequestStatusUpdateRe
 import ru.practicum.explorewithme.service.request.dto.ParticipationRequestDto;
 import ru.practicum.explorewithme.service.request.service.EventRequestService;
 
-
 import java.util.List;
 
 

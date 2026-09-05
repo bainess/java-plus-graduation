@@ -10,11 +10,11 @@ import ru.practicum.explorewithme.service.compilation.dal.CompilationRepository;
 import ru.practicum.explorewithme.service.compilation.dto.CompilationDto;
 import ru.practicum.explorewithme.service.compilation.dto.NewCompilationDto;
 import ru.practicum.explorewithme.service.compilation.dto.UpdateCompilationRequestDto;
-import ru.practicum.explorewithme.service.compilation.feign.EventClient;
 import ru.practicum.explorewithme.service.compilation.mapper.CompilationMapper;
 import ru.practicum.explorewithme.service.compilation.model.Compilation;
-import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
-import ru.practicum.explorewithme.shareddto.exception.NotFoundException;
+import ru.practicum.explorewithme.service.event.dal.EventRepository;
+import ru.practicum.explorewithme.service.event.model.Event;
+import ru.practicum.explorewithme.service.exception.NotFoundException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
-    private final EventClient eventClient;
+    private final EventRepository eventRepository;
 
-    private void validateEventsExist(Set<EventShortDto> events, List<Long> eventIds) {
+    private void validateEventsExist(Set<Event> events, List<Long> eventIds) {
         if (eventIds != null && !eventIds.isEmpty()) {
-            Set<Long> foundIds = events.stream().map(EventShortDto::getId).collect(Collectors.toSet());
+            Set<Long> foundIds = events.stream().map(Event::getId).collect(Collectors.toSet());
             for (Long eventId : eventIds) {
                 if (!foundIds.contains(eventId)) {
                     throw new NotFoundException("Событие с id=" + eventId + " не найдено");
@@ -45,15 +45,14 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = CompilationMapper.toEntity(dto);
 
         if (dto.getEvents() != null && !dto.getEvents().isEmpty()) {
-            Set<EventShortDto> events = new HashSet<>(eventClient.findAllByIdShortDto(dto.getEvents()));
+            Set<Event> events = new HashSet<>(eventRepository.findAllById(dto.getEvents()));
             validateEventsExist(events, dto.getEvents());
             compilation.setEvents(events);
         }
 
         compilation = compilationRepository.save(compilation);
         log.info("Создана подборка: {}", compilation.getId());
-        List<EventShortDto> events = eventClient.findAllByIdShortDto(compilation.getEventsIds().stream().toList()).stream().toList();
-        return CompilationMapper.toDto(compilation, events.stream().toList());
+        return CompilationMapper.toDto(compilation);
     }
 
     @Override
@@ -63,15 +62,14 @@ public class CompilationServiceImpl implements CompilationService {
 
         CompilationMapper.updateEntityFromRequest(request, compilation);
 
-        Set<EventShortDto> events = new HashSet<>();
         if (request.getEvents() != null) {
-             events = new HashSet<>(eventClient.findAllByIdShortDto(request.getEvents()));
+            Set<Event> events = new HashSet<>(eventRepository.findAllById(request.getEvents()));
             validateEventsExist(events, request.getEvents());
             compilation.setEvents(events);
         }
 
         log.info("Обновлена подборка: {}", compilation.getId());
-        return CompilationMapper.toDto(compilation, events.stream().toList());
+        return CompilationMapper.toDto(compilation);
     }
 
     @Override
@@ -85,8 +83,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto getById(Long compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException("Подборка с id=" + compId + " не найдена"));
-        List<EventShortDto> events = eventClient.findAllByIdShortDto(compilation.getEventsIds().stream().toList()).stream().toList();
-        return CompilationMapper.toDto(compilation, events);
+        return CompilationMapper.toDto(compilation);
     }
 
     @Override
@@ -100,9 +97,6 @@ public class CompilationServiceImpl implements CompilationService {
             compilations = compilationRepository.findAll(pageable).getContent();
         }
 
-        return compilations.stream().map(compilation -> {
-            List<EventShortDto> events = eventClient.findAllByIdShortDto(compilation.getEventsIds().stream().toList()).stream().toList();
-            return CompilationMapper.toDto(compilation, events);
-        }).collect(Collectors.toList());
+        return compilations.stream().map(CompilationMapper::toDto).collect(Collectors.toList());
     }
 }

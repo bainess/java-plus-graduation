@@ -144,7 +144,7 @@ public class ErrorHandler {
                 "Ошибка валидации: отсутствует обязательный параметр",
                 errorMessage
         );
-        log.error("Отсутствует обязательный параметр: {} ", errorMessage);
+        log.error("Отсутствует обязательный параметр: {}", errorMessage);
         return errorResponse;
     }
 

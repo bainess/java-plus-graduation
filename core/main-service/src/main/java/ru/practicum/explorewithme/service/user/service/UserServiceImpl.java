@@ -7,14 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explorewithme.service.exception.ConflictException;
+import ru.practicum.explorewithme.service.exception.NotFoundException;
 import ru.practicum.explorewithme.service.user.dal.UserRepository;
 import ru.practicum.explorewithme.service.user.dto.NewUserRequest;
 import ru.practicum.explorewithme.service.user.dto.UserDto;
 import ru.practicum.explorewithme.service.user.mapper.UserMapper;
 import ru.practicum.explorewithme.service.user.model.User;
-import ru.practicum.explorewithme.shareddto.dto.user.UserShortDto;
-import ru.practicum.explorewithme.shareddto.exception.ConflictException;
-import ru.practicum.explorewithme.shareddto.exception.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,11 +65,5 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(userId);
         log.debug("Пользователь удален");
-    }
-
-    @Override
-    public UserShortDto getUserShortDto(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User id=" + userId + " was not found"));
-        return new UserShortDto(user.getId(), user.getName());
     }
 }
