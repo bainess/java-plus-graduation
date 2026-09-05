@@ -9,7 +9,7 @@ import ru.yandex.practicum.eventservice.feign.fallback.EventRequestClientFallbac
 
 import java.util.List;
 
-@FeignClient(name = "main-service", contextId = "event-request", fallbackFactory = EventRequestClientFallback.class)
+@FeignClient(name = "request-service", contextId = "event-request", fallbackFactory = EventRequestClientFallback.class)
 public interface EventRequestClient {
     @GetMapping("/api/requests/{eventId}")
     Long countByEventIdAndStatus(@PathVariable("eventId") Long eventId);

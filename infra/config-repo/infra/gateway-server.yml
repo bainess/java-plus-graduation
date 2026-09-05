@@ -25,7 +25,7 @@ spring:
         - id: event-service-api
           uri: lb://event-service
           predicates:
-            - Path=/api/events/**,api/events/short
+            - Path=/api/events/**,/api/events/short
 
         - id: event-service-admin
           uri: lb://event-service
@@ -43,18 +43,30 @@ spring:
             - Path=/admin/categories/**,/categories/**
 
         # ==========================================
+        # REQUEST SERVICE
+        # ==========================================
+        - id: request-service-private
+          uri: lb://request-service
+          predicates:
+            - Path=/users/*/events/*/requests
+
+        - id: request-service-api
+          uri: lb://request-service
+          predicates:
+            - Path=/api/requests/**,/api/requests/confirmedByEventIds
+
+        - id: request-service-public
+          uri: lb://request-service
+          predicates:
+            - Path=/users/*/requests,/users/*/requests/*/cancel
+        # ==========================================
         # MAIN SERVICE
         # ==========================================
-
-        - id: main-service-request
-          uri: lb://main-service
-          predicates:
-            - Path=/users/*/events/*/requests/**,/api/requests/confirmedByEventIds,/api/requests/**
 
         - id: main-service-read
           uri: lb://main-service
           predicates:
-            - Path=/compilations/**,/users/**,/admin/**,
+            - Path=/compilations/**,/users/**,/admin/**
             - Method=GET
           filters:
             - name: Retry

@@ -15,7 +15,6 @@ spring:
             - file:./infra/config-repo/core
             - file:./infra/config-repo/stat
             - file:./infra/config-repo/infra
-            - file:./infra/config-repo
 
 eureka:
   client:

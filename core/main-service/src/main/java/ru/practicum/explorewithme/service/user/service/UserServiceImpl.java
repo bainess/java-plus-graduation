@@ -17,6 +17,7 @@ import ru.practicum.explorewithme.shareddto.exception.ConflictException;
 import ru.practicum.explorewithme.shareddto.exception.NotFoundException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,5 +73,10 @@ public class UserServiceImpl implements UserService {
     public UserShortDto getUserShortDto(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User id=" + userId + " was not found"));
         return new UserShortDto(user.getId(), user.getName());
+    }
+
+    @Override
+    public Map<Long, UserShortDto> getUsersByIds(List<Long> userIds) {
+        return userRepository.findAllById(userIds).stream().collect(Collectors.toMap(User::getId, user -> new UserShortDto(user.getId(), user.getName())));
     }
 }

@@ -5,6 +5,7 @@ import ru.practicum.explorewithme.service.user.dto.UserDto;
 import ru.practicum.explorewithme.shareddto.dto.user.UserShortDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     UserDto registerUser(NewUserRequest newUserRequest);
@@ -14,4 +15,6 @@ public interface UserService {
     void deleteUser(Long userId);
 
     UserShortDto getUserShortDto(Long userId);
+
+    Map<Long, UserShortDto> getUsersByIds(List<Long> userIds);
 }
