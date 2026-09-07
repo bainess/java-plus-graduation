@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@FeignClient(name = "main-service", contextId = "users")
+@FeignClient(name = "user-service", contextId = "users")
 public interface UserClient {
     @GetMapping("/admin/users/{userId}")
     UserShortDto findById(@PathVariable Long userId);

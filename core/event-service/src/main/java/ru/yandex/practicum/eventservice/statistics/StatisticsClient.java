@@ -30,15 +30,16 @@ public class StatisticsClient {
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private ServiceInstance getInstance() {
-        try {
-            return discoveryClient.getInstances(statsServiceId)
-                    .getFirst();
-        } catch (StatsServerUnavailable e) {
+        List<ServiceInstance> instances = discoveryClient.getInstances(statsServiceId);
+        System.out.println("Looking for service: " + statsServiceId);
+        System.out.println("Found instances: " + instances);
+        if (instances.isEmpty()) {
             throw new StatsServerUnavailable(
-                    "Error discovering statistics service with id " + statsServiceId,
-                    e
+                    "Statistics service is unavailable: " + statsServiceId
             );
         }
+
+        return instances.getFirst();
     }
 
     private URI makeUri(String path) {

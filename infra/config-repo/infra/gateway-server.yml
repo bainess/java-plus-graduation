@@ -59,6 +59,22 @@ spring:
           uri: lb://request-service
           predicates:
             - Path=/users/*/requests,/users/*/requests/*/cancel
+
+        # ==========================================
+        # USER SERVICE
+        # ==========================================
+        - id: user-service-read
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users,/admin/users/**
+            - Method=GET
+
+        - id: user-service-write
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users,/admin/users/**
+            - Method=POST,DELETE
+
         # ==========================================
         # MAIN SERVICE
         # ==========================================
