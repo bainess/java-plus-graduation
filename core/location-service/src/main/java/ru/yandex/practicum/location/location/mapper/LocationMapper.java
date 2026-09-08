@@ -1,10 +1,10 @@
-package ru.yandex.practicum.eventservice.location.mapper;
+package ru.yandex.practicum.location.location.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.explorewithme.shareddto.dto.location.LocationDto;
-import ru.yandex.practicum.eventservice.location.dto.NewLocationRequest;
-import ru.yandex.practicum.eventservice.location.dto.UpdateLocationRequest;
-import ru.yandex.practicum.eventservice.location.model.Location;
+import ru.yandex.practicum.location.location.dto.NewLocationRequest;
+import ru.yandex.practicum.location.location.dto.UpdateLocationRequest;
+import ru.yandex.practicum.location.location.model.Location;
 
 
 @UtilityClass

@@ -1,7 +1,7 @@
-package ru.yandex.practicum.eventservice.location.dal;
+package ru.yandex.practicum.location.location.dal;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.yandex.practicum.eventservice.location.model.Location;
+import ru.yandex.practicum.location.location.model.Location;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
     boolean existsByName(String name);

@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.explorewithme.shareddto.enums.EventState;
 import ru.yandex.practicum.eventservice.category.model.Category;
 
-
 import java.time.LocalDateTime;
 
 @Entity

@@ -46,7 +46,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         Map<Long, UserShortDto> requesters = userClient.findAllById(requesterIds);
         return requests.stream()
                 .map(request -> {
-                    return ParticipationRequestMapper.toDto(request, requesters.get(request.getRequesterId()));
+                            return ParticipationRequestMapper.toDto(request, requesters.get(request.getRequesterId()));
                         }
                 )
                 .collect(Collectors.toList());
@@ -156,7 +156,7 @@ public class EventRequestServiceImpl implements EventRequestService {
     private EventRequestStatusUpdateResult buildResult(List<ParticipationRequest> confirmed,
                                                        List<ParticipationRequest> rejected) {
         List<Long> confirmedUserIds = confirmed.stream().map(ParticipationRequest::getRequesterId).toList();
-        Map<Long, UserShortDto> confirmedUsers= userClient.findAllById(confirmedUserIds);
+        Map<Long, UserShortDto> confirmedUsers = userClient.findAllById(confirmedUserIds);
         List<Long> rejectedUserIds = rejected.stream().map(ParticipationRequest::getRequesterId).toList();
         Map<Long, UserShortDto> rejectedUsers = userClient.findAllById(rejectedUserIds);
         return EventRequestStatusUpdateResult.builder()

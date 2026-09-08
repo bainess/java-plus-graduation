@@ -1,4 +1,4 @@
-package ru.yandex.practicum.eventservice.location.service;
+package ru.yandex.practicum.location.location.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -7,14 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.location.LocationDto;
 import ru.practicum.explorewithme.shareddto.exception.ConflictException;
 import ru.practicum.explorewithme.shareddto.exception.NotFoundException;
-import ru.yandex.practicum.eventservice.location.dal.LocationRepository;
-import ru.yandex.practicum.eventservice.location.dto.NewLocationRequest;
-import ru.yandex.practicum.eventservice.location.dto.UpdateLocationRequest;
-import ru.yandex.practicum.eventservice.location.mapper.LocationMapper;
-import ru.yandex.practicum.eventservice.location.model.Location;
+import ru.yandex.practicum.location.location.dal.LocationRepository;
+import ru.yandex.practicum.location.location.dto.NewLocationRequest;
+import ru.yandex.practicum.location.location.dto.UpdateLocationRequest;
+import ru.yandex.practicum.location.location.feign.EventClient;
+import ru.yandex.practicum.location.location.mapper.LocationMapper;
+import ru.yandex.practicum.location.location.model.Location;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class LocationServiceImpl implements LocationService {
     private final LocationRepository locationRepository;
+    private final EventClient eventClient;
 
     @Transactional
     @Override
@@ -64,5 +67,10 @@ public class LocationServiceImpl implements LocationService {
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").ascending());
         Page<Location> page = locationRepository.findAll(pageable);
         return page.getContent().stream().map(LocationMapper::toDto).toList();
+    }
+
+    @Override
+    public List<EventFullDto> getEventsByLocation(Long searchLocId, int from, int size) {
+        return eventClient.getEventsByLocation(searchLocId, from, size);
     }
 }

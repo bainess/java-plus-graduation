@@ -10,5 +10,5 @@ import java.util.List;
 @FeignClient(name = "event-service", contextId = "event-request")
 public interface EventClient {
     @GetMapping("/users/{userId}/events")
-    List<EventShortDto> getEventsByUser (@PathVariable Long userId);
+    List<EventShortDto> getEventsByUser(@PathVariable Long userId);
 }

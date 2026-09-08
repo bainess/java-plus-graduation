@@ -11,7 +11,6 @@ import ru.practicum.explorewithme.shareddto.enums.EventState;
 import ru.yandex.practicum.eventservice.event.dto.EventSearchParamsAdmin;
 import ru.yandex.practicum.eventservice.event.service.EventService;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.eventservice.location.dto;
+package ru.yandex.practicum.location.location.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

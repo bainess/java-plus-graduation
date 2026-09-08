@@ -1,4 +1,4 @@
-package ru.yandex.practicum.eventservice.location.controller;
+package ru.yandex.practicum.location.location.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -7,11 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.location.LocationDto;
-import ru.yandex.practicum.eventservice.event.service.EventService;
-import ru.yandex.practicum.eventservice.location.dto.NewLocationRequest;
-import ru.yandex.practicum.eventservice.location.dto.UpdateLocationRequest;
-import ru.yandex.practicum.eventservice.location.service.LocationService;
-
+import ru.yandex.practicum.location.location.dto.NewLocationRequest;
+import ru.yandex.practicum.location.location.dto.UpdateLocationRequest;
+import ru.yandex.practicum.location.location.service.LocationService;
 
 import java.util.List;
 
@@ -21,7 +19,6 @@ import java.util.List;
 @RequestMapping("/admin/locations")
 public class LocationAdminController {
     private final LocationService locationService;
-    private final EventService eventService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -67,7 +64,7 @@ public class LocationAdminController {
                                                   @RequestParam(defaultValue = "0") int from,
                                                   @RequestParam(defaultValue = "10") int size) {
         log.info("Запрос событий в радиусе локации id={}, from={}, size={}", searchLocId, from, size);
-        return eventService.getEventsByLocation(searchLocId, from, size);
+        return locationService.getEventsByLocation(searchLocId, from, size);
     }
 
 }

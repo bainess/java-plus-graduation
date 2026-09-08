@@ -4,11 +4,9 @@ import ru.practicum.explorewithme.service.compilation.dto.CompilationDto;
 import ru.practicum.explorewithme.service.compilation.dto.NewCompilationDto;
 import ru.practicum.explorewithme.service.compilation.dto.UpdateCompilationRequestDto;
 import ru.practicum.explorewithme.service.compilation.model.Compilation;
-import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
 
 import java.util.List;
-import java.util.Set;
 
 public final class CompilationMapper {
 

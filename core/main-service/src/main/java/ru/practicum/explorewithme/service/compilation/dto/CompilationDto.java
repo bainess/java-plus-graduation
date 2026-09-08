@@ -3,7 +3,6 @@ package ru.practicum.explorewithme.service.compilation.dto;
 import lombok.*;
 import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
 
-
 import java.util.List;
 
 @Getter

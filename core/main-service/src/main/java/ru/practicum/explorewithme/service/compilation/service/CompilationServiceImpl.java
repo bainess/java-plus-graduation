@@ -65,7 +65,7 @@ public class CompilationServiceImpl implements CompilationService {
 
         Set<EventShortDto> events = new HashSet<>();
         if (request.getEvents() != null) {
-             events = new HashSet<>(eventClient.findAllByIdShortDto(request.getEvents()));
+            events = new HashSet<>(eventClient.findAllByIdShortDto(request.getEvents()));
             validateEventsExist(events, request.getEvents());
             compilation.setEvents(events);
         }

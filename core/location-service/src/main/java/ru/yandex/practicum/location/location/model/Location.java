@@ -1,4 +1,4 @@
-package ru.yandex.practicum.eventservice.location.model;
+package ru.yandex.practicum.location.location.model;
 
 import jakarta.persistence.*;
 import lombok.*;

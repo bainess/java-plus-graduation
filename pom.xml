@@ -15,10 +15,7 @@
         <module>stat</module>
         <module>core</module>
         <module>infra</module>
-		<module>core/user-service</module>
-		<!--		<module>core/event-service</module>-->
-<!--        <module>core/shared-dto</module>-->
-<!--        <module>core/request-service</module>-->
+
     </modules>
 
 	<groupId>ru.practicum</groupId>

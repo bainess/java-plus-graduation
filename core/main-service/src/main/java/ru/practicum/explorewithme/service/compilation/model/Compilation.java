@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
 
 import java.util.HashSet;
@@ -37,8 +36,10 @@ public class Compilation {
     public void setEvents(Set<EventShortDto> events) {
         this.eventsIds = events.stream()
                 .map(EventShortDto::getId)
-                .collect(Collectors.toSet());;
+                .collect(Collectors.toSet());
+        ;
     }
+
     public Set<Long> getEvents() {
         return this.eventsIds;
     }

@@ -14,7 +14,7 @@ public class RequestApiController {
     private final EventRequestService eventRequestService;
 
     @GetMapping("/{eventId}")
-    public Integer getNumberOfConfirmedRequests(@PathVariable ("eventId") Long eventId) {
+    public Integer getNumberOfConfirmedRequests(@PathVariable("eventId") Long eventId) {
         return eventRequestService.getConfirmedRequests(eventId);
     }
 

@@ -32,16 +32,23 @@ spring:
           predicates:
             - Path=/admin/events/**
 
-        - id: event-service-location
-          uri: lb://event-service
-          predicates:
-            - Path=/admin/locations/**
-
         - id: event-service-categories
           uri: lb://event-service
           predicates:
             - Path=/admin/categories/**,/categories/**
+        # ==========================================
+        # LOCATION SERVICE
+        # ==========================================
+        - id: location-service-read
+          uri: lb://location-service
+          predicates:
+            - Path=/api/*/events
+            - Method=GET
 
+        - id: location-service
+          uri: lb://location-service
+          predicates:
+            - Path=/admin/locations/**,/admin/locations
         # ==========================================
         # REQUEST SERVICE
         # ==========================================

@@ -6,6 +6,7 @@ import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
 import ru.yandex.practicum.eventservice.event.service.EventService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class EventApiController {
 
     @GetMapping("/{eventId}/users/{userId}")
     public Optional<EventFullDto> findByIdAndInitiatorId(@PathVariable Long eventId,
-                                                  @PathVariable Long userId) {
+                                                         @PathVariable Long userId) {
         return Optional.of(eventService.getEventFullDto(eventId, userId));
     }
 
@@ -27,7 +28,7 @@ public class EventApiController {
     }
 
     @GetMapping("/full")
-    public Set<EventFullDto> findAllByIdFullDto(@PathVariable Set<Long>eventIds) {
+    public Set<EventFullDto> findAllByIdFullDto(@PathVariable Set<Long> eventIds) {
         return eventService.findAllById(eventIds);
     }
 
@@ -36,4 +37,10 @@ public class EventApiController {
         return eventService.findAllByIdShort(eventIds);
     }
 
+    @GetMapping("api/{searchLocId}/events")
+    List<EventFullDto> getEventsByLocation(@PathVariable(name = "searchLocId") Long searchLocId,
+                                           @RequestParam(defaultValue = "0") int from,
+                                           @RequestParam(defaultValue = "10") int size) {
+        return eventService.getEventsByLocation(searchLocId, from, size);
+    }
 }

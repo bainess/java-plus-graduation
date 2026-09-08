@@ -7,7 +7,6 @@ import ru.yandex.practicum.requestservice.dto.EventRequestStatusUpdateResult;
 import ru.yandex.practicum.requestservice.dto.ParticipationRequestDto;
 import ru.yandex.practicum.requestservice.service.EventRequestService;
 
-
 import java.util.List;
 
 

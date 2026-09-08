@@ -1,4 +1,4 @@
-package ru.yandex.practicum.eventservice.location.dto;
+package ru.yandex.practicum.location.location.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

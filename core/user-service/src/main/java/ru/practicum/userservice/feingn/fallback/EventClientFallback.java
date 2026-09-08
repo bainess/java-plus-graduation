@@ -13,12 +13,13 @@ import java.util.List;
 @Component
 public class EventClientFallback implements FallbackFactory<EventClient> {
     private static final Logger log = LoggerFactory.getLogger(EventClientFallback.class);
+
     @Override
     public EventClient create(Throwable cause) {
         return new EventClient() {
             @Override
             public List<EventShortDto> getEventsByUser(Long userId) {
-                log.info("Event client is not available for user service userId={}",userId,cause);
+                log.info("Event client is not available for user service userId={}", userId, cause);
                 throw new EventServiceNotAvailableException(userId, cause);
             }
         };

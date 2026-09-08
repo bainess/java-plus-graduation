@@ -18,7 +18,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
         return new UserClient() {
             @Override
             public UserShortDto findById(Long userId) {
-                log.warn("User service is not available for user id={}",userId, cause);
+                log.warn("User service is not available for user id={}", userId, cause);
                 throw new UserServiceUnavailableException(userId, cause);
             }
         };

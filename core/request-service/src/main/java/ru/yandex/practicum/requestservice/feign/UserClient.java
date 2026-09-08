@@ -8,7 +8,6 @@ import ru.practicum.explorewithme.shareddto.dto.user.UserShortDto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @FeignClient(name = "user-service", contextId = "users")
 public interface UserClient {

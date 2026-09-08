@@ -11,7 +11,6 @@ import ru.practicum.explorewithme.shareddto.dto.event.NewEventDto;
 import ru.practicum.explorewithme.shareddto.dto.event.UpdateEventUserRequest;
 import ru.yandex.practicum.eventservice.event.service.EventService;
 
-
 import java.util.List;
 
 @Slf4j
