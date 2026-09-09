@@ -12,6 +12,7 @@ import ru.yandex.practicum.location.location.dto.UpdateLocationRequest;
 import ru.yandex.practicum.location.location.service.LocationService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +31,11 @@ public class LocationAdminController {
 
     @PatchMapping("/{locId}")
     @ResponseStatus(HttpStatus.OK)
-    public LocationDto updateLocation(@PathVariable(name = "locId") Long locId,
-                                      @Valid @RequestBody UpdateLocationRequest request) {
+    public Optional<LocationDto> updateLocation(@PathVariable(name = "locId") Long locId,
+                                                @Valid @RequestBody UpdateLocationRequest request) {
         log.info("Запрос на обновление локации lat - {}, lon - {}, rad - {}",
                 request.getLat(), request.getLon(), request.getRadius());
-        return locationService.updateLocation(locId, request);
+        return Optional.ofNullable(locationService.updateLocation(locId, request));
     }
 
     @DeleteMapping("/{locId}")

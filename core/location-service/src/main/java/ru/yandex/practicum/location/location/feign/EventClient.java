@@ -10,7 +10,7 @@ import java.util.List;
 
 @FeignClient(name = "event-service", fallbackFactory = EventClientFallback.class)
 public interface EventClient {
-    @GetMapping("api/{searchLocId}/events")
+    @GetMapping("api/events/{searchLocId}/events")
     List<EventFullDto> getEventsByLocation(@PathVariable(name = "searchLocId") Long searchLocId,
                                            @RequestParam(defaultValue = "0") int from,
                                            @RequestParam(defaultValue = "10") int size);

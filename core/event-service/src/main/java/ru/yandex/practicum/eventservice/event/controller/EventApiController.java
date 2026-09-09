@@ -37,7 +37,7 @@ public class EventApiController {
         return eventService.findAllByIdShort(eventIds);
     }
 
-    @GetMapping("api/{searchLocId}/events")
+    @GetMapping("/{searchLocId}/events")
     List<EventFullDto> getEventsByLocation(@PathVariable(name = "searchLocId") Long searchLocId,
                                            @RequestParam(defaultValue = "0") int from,
                                            @RequestParam(defaultValue = "10") int size) {

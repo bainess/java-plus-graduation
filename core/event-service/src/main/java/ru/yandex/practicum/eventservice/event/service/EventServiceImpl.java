@@ -27,8 +27,8 @@ import ru.yandex.practicum.eventservice.event.mapper.EventMapper;
 import ru.yandex.practicum.eventservice.event.model.Event;
 import ru.yandex.practicum.eventservice.event.service.predicate.EventPredicate;
 import ru.yandex.practicum.eventservice.feign.client.EventRequestClient;
+import ru.yandex.practicum.eventservice.feign.client.LocationClient;
 import ru.yandex.practicum.eventservice.feign.client.UserClient;
-import ru.yandex.practicum.eventservice.location.dal.LocationRepository;
 import ru.yandex.practicum.eventservice.statistics.StatisticsClient;
 
 import java.time.LocalDateTime;
@@ -47,7 +47,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final EventRequestClient requestClient;
     private final StatisticsClient statsClient;
-    private final LocationRepository locationRepository;
+    private final LocationClient locationClient;
     final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
@@ -183,7 +183,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> getEventsByLocation(Long locId, int from, int size) {
-        locationRepository.findById(locId)
+        locationClient.findById(locId)
                 .orElseThrow(() -> new NotFoundException("Локация " + locId + " не найдена"));
 
         Pageable pageable = PageRequest.of(from / size, size);
