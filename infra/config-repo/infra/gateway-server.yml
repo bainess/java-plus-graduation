@@ -86,7 +86,7 @@ spring:
         # MAIN SERVICE
         # ==========================================
 
-        - id: main-service-read
+        - id: compilation-service-read
           uri: lb://main-service
           predicates:
             - Path=/compilations/**,/users/**,/admin/**
@@ -105,7 +105,7 @@ spring:
                   firstBackoff: 100ms
                   maxBackoff: 500ms
 
-        - id: main-service
+        - id: compilation-service
           uri: lb://main-service
           predicates:
             - Path=/compilations/**,/users/**,/admin/**,/api/**
