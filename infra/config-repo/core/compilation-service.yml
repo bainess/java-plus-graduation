@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: main-service
+    name: compilation-service
   datasource:
     url: jdbc:postgresql://localhost:5432/ewm_main_db
     username: postgres

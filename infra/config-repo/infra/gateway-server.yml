@@ -87,7 +87,7 @@ spring:
         # ==========================================
 
         - id: compilation-service-read
-          uri: lb://main-service
+          uri: lb://compilation-service
           predicates:
             - Path=/compilations/**,/users/**,/admin/**
             - Method=GET
@@ -106,7 +106,7 @@ spring:
                   maxBackoff: 500ms
 
         - id: compilation-service
-          uri: lb://main-service
+          uri: lb://compilation-service
           predicates:
             - Path=/compilations/**,/users/**,/admin/**,/api/**
 
