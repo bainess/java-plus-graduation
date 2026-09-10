@@ -4,7 +4,12 @@ public class EventRequestServiceNotAvailableException extends RuntimeException {
     public EventRequestServiceNotAvailableException(String message) {
         super(message);
     }
-public EventRequestServiceNotAvailableException(Long aLong, Throwable cause) {
 
-}
+    public EventRequestServiceNotAvailableException(Long aLong, Throwable cause) {
+
+    }
+
+    public EventRequestServiceNotAvailableException(String aLong, Throwable cause) {
+
+    }
 }

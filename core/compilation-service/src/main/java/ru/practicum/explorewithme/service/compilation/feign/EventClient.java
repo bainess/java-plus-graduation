@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.practicum.explorewithme.service.compilation.feign.fallback.EventClientFallback;
 import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
 
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@FeignClient(name = "event-service", contextId = "events")
+@FeignClient(name = "event-service", contextId = "events",
+fallbackFactory = EventClientFallback.class)
 public interface EventClient {
 
     @GetMapping("/api/events/{eventId}/users/{userId}")

@@ -17,7 +17,7 @@ public class LocationServiceFallback implements FallbackFactory<LocationClient> 
         return new LocationClient() {
             @Override
             public Optional<LocationDto> findById(Long locId) {
-                log.warn("FALLBACK: Location service unavailable, cause");
+                log.warn("FALLBACK: Location service unavailable location id={}", locId, cause);
                 throw new LocationServiceNotAvailableException(locId, cause);
             }
         };
