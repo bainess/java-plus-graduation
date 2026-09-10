@@ -28,8 +28,7 @@ public class Compilation {
     @Column(nullable = false)
     private Boolean pinned;
 
-    @ElementCollection
-    @CollectionTable(name = "compilation_id", joinColumns = @JoinColumn(name = "compilation_id"))
+    @CollectionTable(name = "compilation_events", joinColumns = @JoinColumn(name = "compilation_id"))
     @Column(name = "event_id")
     private Set<Long> eventsIds = new HashSet<>();
 
