@@ -7,4 +7,7 @@ public class UserServiceUnavailableException  extends RuntimeException{
     public UserServiceUnavailableException(Long aLong, Throwable cause) {
 
     }
+    public UserServiceUnavailableException(String a, Throwable cause) {
+
+    }
 }

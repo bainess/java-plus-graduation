@@ -7,4 +7,10 @@ public class EventServiceNotAvailableException extends RuntimeException {
     public EventServiceNotAvailableException(Long aLong, Throwable cause) {
 
     }
+    public EventServiceNotAvailableException(String s, Throwable cause) {
+
+    }
+    public EventServiceNotAvailableException(Long a, Long b, Throwable cause) {
+
+    }
 }
