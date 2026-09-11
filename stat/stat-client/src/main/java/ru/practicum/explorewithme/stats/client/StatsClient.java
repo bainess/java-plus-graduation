@@ -1,10 +1,7 @@
 package ru.practicum.explorewithme.stats.client;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.http.HttpStatus;
@@ -13,7 +10,6 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.practicum.explorewithme.stats.client.exception.StatsServerUnavailable;
 import ru.practicum.explorewithme.stats.dto.EndpointHitDTO;
 import ru.practicum.explorewithme.stats.dto.ViewStatsDTO;
 
@@ -45,7 +41,7 @@ public class StatsClient extends BaseClient {
         try {
             log.info("Отправка статистики на сервер: {}", hitDto);
 
-                return post("/hit", hitDto);
+            return post("/hit", hitDto);
         } catch (Exception e) {
             log.warn("Не удалось сохранить хит в статистику. Ошибка: {}. Тело: {}", e.getMessage(), hitDto);
             log.error("DEBUG: Поймали исключение: ", e);

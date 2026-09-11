@@ -8,10 +8,88 @@ spring:
         locator:
           enabled: false
       routes:
-        - id: main-service-read
-          uri: lb://main-service
+        # ==========================================
+        # EVENT SERVICE
+        # ==========================================
+
+        - id: event-service-private
+          uri: lb://event-service
           predicates:
-            - Path=/categories/**,/compilations/**,/events/**,/users/**,/locations/**,/admin/**
+            - Path=/users/*/events,/users/*/events/*
+
+        - id: event-service-public
+          uri: lb://event-service
+          predicates:
+            - Path=/events/**
+
+        - id: event-service-api
+          uri: lb://event-service
+          predicates:
+            - Path=/api/events/**,/api/events/short
+
+        - id: event-service-admin
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/events/**
+
+        - id: event-service-categories
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/categories/**,/categories/**
+        # ==========================================
+        # LOCATION SERVICE
+        # ==========================================
+        - id: location-service-read
+          uri: lb://location-service
+          predicates:
+            - Path=/api/*/events
+            - Method=GET
+
+        - id: location-service
+          uri: lb://location-service
+          predicates:
+            - Path=/admin/locations/**,/admin/locations
+        # ==========================================
+        # REQUEST SERVICE
+        # ==========================================
+        - id: request-service-private
+          uri: lb://request-service
+          predicates:
+            - Path=/users/*/events/*/requests
+
+        - id: request-service-api
+          uri: lb://request-service
+          predicates:
+            - Path=/api/requests/**,/api/requests/confirmedByEventIds
+
+        - id: request-service-public
+          uri: lb://request-service
+          predicates:
+            - Path=/users/*/requests,/users/*/requests/*/cancel
+
+        # ==========================================
+        # USER SERVICE
+        # ==========================================
+        - id: user-service-read
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users,/admin/users/**
+            - Method=GET
+
+        - id: user-service-write
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users,/admin/users/**
+            - Method=POST,DELETE
+
+        # ==========================================
+        # MAIN SERVICE
+        # ==========================================
+
+        - id: compilation-service-read
+          uri: lb://compilation-service
+          predicates:
+            - Path=/compilations/**,/users/**,/admin/**
             - Method=GET
           filters:
             - name: Retry
@@ -27,10 +105,11 @@ spring:
                   firstBackoff: 100ms
                   maxBackoff: 500ms
 
-        - id: main-service
-          uri: lb://main-service
+        - id: compilation-service
+          uri: lb://compilation-service
           predicates:
-            - Path=/categories/**,/compilations/**,/events/**,/users/**,/locations/**,/admin/**
+            - Path=/compilations/**,/users/**,/admin/**,/api/**
+
 
 logging:
   level:
