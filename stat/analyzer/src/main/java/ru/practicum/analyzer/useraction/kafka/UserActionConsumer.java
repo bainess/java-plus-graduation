@@ -1,0 +1,60 @@
+package ru.practicum.analyzer.useraction.kafka;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
+import org.springframework.stereotype.Component;
+import ru.practicum.analyzer.useraction.service.UserEventService;
+import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
+import ru.practicum.ewm.stats.avro.UserActionAvro;
+
+import java.time.Duration;
+import java.util.List;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class UserActionConsumer {
+    private static final String USER_ACTION_TOPIC = "stats.user-actions.v1";
+    private final KafkaConsumer<String, SpecificRecordBase> kafkaConsumer;
+    private final UserEventService service;
+
+    public void start() {
+        try {
+            kafkaConsumer.subscribe(List.of(USER_ACTION_TOPIC));
+
+            while (true) {
+                ConsumerRecords<String, SpecificRecordBase> records =
+                        kafkaConsumer.poll(Duration.ofMillis(100));
+
+                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
+                    UserActionAvro action = (UserActionAvro) record.value();
+
+                    log.info("Received similarity: userId={}, eventId={}, actionType={}, timestamp={}",
+                            action.getUserId(),
+                            action.getEventId(),
+                            action.getActionType(),
+                            action.getTimestamp());
+
+                    service.saveUserAction(action);
+                }
+                kafkaConsumer.commitSync();
+            }
+        } catch (WakeupException ignored) {
+        } catch (Exception e) {
+            log.error("Handling event error", e);
+        } finally {
+            try {
+                kafkaConsumer.commitSync();
+            } finally {
+                kafkaConsumer.close();
+                log.info("Consumer closed");
+            }
+        }
+    }
+
+}

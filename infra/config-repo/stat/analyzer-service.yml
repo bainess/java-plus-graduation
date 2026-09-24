@@ -1,0 +1,37 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: analyzer-server
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recommendation_db
+    username: postgres
+    password: 54321
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+
+  jpa:
+    datasource-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: ru.practicum.ewm.stats.collector.config.AvroSerializer
+
+grpc:
+  server:
+    port: 0
+
+logging:
+  level:
+    org.springframework.boot.context.config: DEBUG
+    org.springframework.cloud.config: DEBUG
+    com.zaxxer.hikari: DEBUG
