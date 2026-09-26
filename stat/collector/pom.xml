@@ -70,19 +70,28 @@
             <artifactId>grpc-stub</artifactId>
         </dependency>
 
-        <!-- Project dependencies -->
+        <!-- Generated protobuf/gRPC classes -->
+        <dependency>
+            <groupId>ru.practicum</groupId>
+            <artifactId>proto-schemas</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Avro -->
         <dependency>
             <groupId>ru.practicum</groupId>
             <artifactId>avro-schemas</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- Kafka serializer -->
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
             <artifactId>kafka-serializer</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- javax.annotation.Generated -->
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
@@ -94,43 +103,8 @@
         <plugins>
 
             <plugin>
-                <groupId>io.github.ascopes</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-
-                <configuration>
-                    <protocVersion>${protobuf.version}</protocVersion>
-
-                    <sourceDirectories>
-                        <sourceDirectory>
-                            ${project.basedir}/../serialization/proto-schemas
-                        </sourceDirectory>
-                    </sourceDirectories>
-
-
-                    <binaryMavenPlugins>
-                        <binaryMavenPlugin>
-                            <groupId>io.grpc</groupId>
-                            <artifactId>protoc-gen-grpc-java</artifactId>
-                            <version>${grpc.version}</version>
-                        </binaryMavenPlugin>
-                    </binaryMavenPlugins>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>6</source>
-                    <target>6</target>
-                </configuration>
             </plugin>
 
         </plugins>

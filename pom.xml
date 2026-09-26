@@ -15,8 +15,6 @@
         <module>stat</module>
         <module>core</module>
         <module>infra</module>
-		<module>stat/aggregator</module>
-        <module>stat/analyzer</module>
 
     </modules>
 
