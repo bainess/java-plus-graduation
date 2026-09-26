@@ -1,8 +1,6 @@
 package ru.practicum.analyzer.useraction.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,11 +12,17 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "user_actions")
 public class UserAction {
 
-    @EmbeddedId
-    UserActionId id;
-    double weight;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    Long userId;
+
+    Long eventId;
+
+    double rating;
     Instant timestamp;
 }

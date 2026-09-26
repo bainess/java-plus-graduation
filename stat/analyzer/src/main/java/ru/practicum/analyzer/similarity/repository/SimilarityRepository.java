@@ -4,11 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.analyzer.similarity.model.EventSimilarity;
-import ru.practicum.analyzer.similarity.model.EventSimilarityId;
 
 import java.util.List;
 
-public interface SimilarityRepository extends JpaRepository<EventSimilarity, EventSimilarityId> {
+public interface SimilarityRepository extends JpaRepository<EventSimilarity, Long> {
 
     @Query("""
     SELECT es

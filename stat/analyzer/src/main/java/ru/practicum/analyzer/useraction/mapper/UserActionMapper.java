@@ -1,15 +1,17 @@
 package ru.practicum.analyzer.useraction.mapper;
 
 import ru.practicum.analyzer.useraction.model.UserAction;
-import ru.practicum.analyzer.useraction.model.UserActionId;
 import ru.practicum.ewm.stats.avro.ActionTypeAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
 
 public class UserActionMapper {
     public UserAction mapToUserAction(UserActionAvro avro) {
-        UserActionId id = new UserActionId(avro.getUserId(), avro.getEventId());
-
-        return new UserAction(id, getWeight(avro.getActionType()), avro.getTimestamp());
+        return UserAction.builder()
+                .userId(avro.getUserId())
+                .eventId(avro.getEventId())
+                .weight(getWeight(avro.getActionType()))
+                .timestamp(avro.getTimestamp())
+                .build();
     }
 
     private double getWeight(ActionTypeAvro actionType) {

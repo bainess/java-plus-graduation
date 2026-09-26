@@ -1,8 +1,6 @@
 package ru.practicum.analyzer.similarity.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,11 +12,18 @@ import java.time.Instant;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventSimilarity {
 
-    @EmbeddedId
-    EventSimilarityId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    Long eventA;
+
+    Long eventB;
+
     double score;
     Instant timestamp;
 }
