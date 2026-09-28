@@ -9,7 +9,7 @@ public class UserActionMapper {
         return UserAction.builder()
                 .userId(avro.getUserId())
                 .eventId(avro.getEventId())
-                .weight(getWeight(avro.getActionType()))
+                .rating(getWeight(avro.getActionType()))
                 .timestamp(avro.getTimestamp())
                 .build();
     }

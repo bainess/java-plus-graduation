@@ -23,6 +23,6 @@ public class UserAction {
 
     Long eventId;
 
-    double rating;
+    Double rating;
     Instant timestamp;
 }

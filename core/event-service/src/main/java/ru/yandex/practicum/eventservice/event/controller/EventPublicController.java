@@ -1,6 +1,7 @@
 package ru.yandex.practicum.eventservice.event.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
 import ru.practicum.explorewithme.shareddto.exception.BadRequestException;
-import ru.practicum.explorewithme.stats.dto.EndpointHitDTO;
 import ru.yandex.practicum.eventservice.config.AppProperties;
 import ru.yandex.practicum.eventservice.event.dto.EventSearchParams;
 import ru.yandex.practicum.eventservice.event.service.EventService;
@@ -44,12 +44,6 @@ public class EventPublicController {
         if (rangeEnd != null && rangeStart != null && rangeEnd.isBefore(rangeStart)) {
             throw new BadRequestException("rangeEnd должен быть позже rangeStart");
         }
-        EndpointHitDTO hit = new EndpointHitDTO();
-        hit.setApp("ewm-main-service");
-        hit.setUri(request.getRequestURI());
-        hit.setIp(request.getRemoteAddr());
-        hit.setTimestamp(LocalDateTime.now());
-        statsClient.saveHit(hit);
 
         EventSearchParams params = EventSearchParams.builder()
                 .text(text)
@@ -68,20 +62,24 @@ public class EventPublicController {
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventByIdAndPublished(@PathVariable(name = "eventId") Long eventId,
-                                                 HttpServletRequest request) {
+                                                 HttpServletRequest request,
+                                                 @RequestHeader("X-EWM-USER-ID") long userId) {
         log.info("Запрос на получение события {}", eventId);
 
-//        обновляет статистику по событию
+        return eventService.getEventPublic(eventId, userId);
+    }
 
-        EndpointHitDTO hit = new EndpointHitDTO();
-        hit.setApp(appProperties.getName());
-        log.info("Название приложения {}", appProperties.getName());
-        hit.setUri(request.getRequestURI());
-        hit.setIp(request.getRemoteAddr());
-        hit.setTimestamp(LocalDateTime.now());
-        statsClient.saveHit(hit);
-// получает событие
+    @GetMapping("/recommendations")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventShortDto> getRecommendations(@RequestHeader("X-EWM-USER-ID") long userId) {
+        log.info("Запрос на получение рекомендаций для {}", userId);
+        return eventService.getRecommendations(userId);
+    }
 
-        return eventService.getEventPublic(eventId);
+    @PutMapping("events/{eventId}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void saveLike(@PathVariable("eventId") long eventId,
+                         @RequestHeader("X-EWM-USER-ID") long userId) {
+        eventService.saveEventLike(eventId, userId);
     }
 }

@@ -8,6 +8,8 @@ import ru.yandex.practicum.requestservice.dto.ParticipationRequestDto;
 import java.util.List;
 
 public interface EventRequestService {
+    Boolean checkUserRegistered(Long eventId, Long userId);
+
     List<ParticipationRequestDto> getEventRequests(Long userId, Long eventId);
 
     EventRequestStatusUpdateResult updateEventRequests(Long userId, Long eventId,

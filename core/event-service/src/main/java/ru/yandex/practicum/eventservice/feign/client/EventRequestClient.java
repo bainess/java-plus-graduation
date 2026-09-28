@@ -1,5 +1,6 @@
 package ru.yandex.practicum.eventservice.feign.client;
 
+import jakarta.ws.rs.Path;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,4 +18,8 @@ public interface EventRequestClient {
 
     @GetMapping("/api/requests/confirmedByEventIds")
     List<ConfirmedRequestsCount> countConfirmedRequestsByEventIds(@RequestParam List<Long> eventIds);
+
+    @GetMapping("/api/requests/{eventId}/{userId}")
+    Boolean isRegistered(@PathVariable("eventId") long eventId,
+                         @PathVariable("userId") long userId);
 }

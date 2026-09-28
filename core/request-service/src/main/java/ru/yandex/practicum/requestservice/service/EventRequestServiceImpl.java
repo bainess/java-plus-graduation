@@ -11,6 +11,7 @@ import ru.practicum.explorewithme.shareddto.enums.EventState;
 import ru.practicum.explorewithme.shareddto.enums.ParticipationRequestStatus;
 import ru.practicum.explorewithme.shareddto.exception.ConflictException;
 import ru.practicum.explorewithme.shareddto.exception.NotFoundException;
+import ru.practicum.explorewithme.stats.client.CollectorClient;
 import ru.yandex.practicum.requestservice.dal.EventRequestRepository;
 import ru.yandex.practicum.requestservice.dto.EventRequestStatusUpdateRequest;
 import ru.yandex.practicum.requestservice.dto.EventRequestStatusUpdateResult;
@@ -34,6 +35,12 @@ public class EventRequestServiceImpl implements EventRequestService {
     private final EventClient eventClient;
     private final EventRequestRepository eventRequestRepository;
     private final UserClient userClient;
+    private final CollectorClient collectorClient;
+
+    @Override
+    public Boolean checkUserRegistered(Long eventId, Long userId) {
+       return eventRequestRepository.existsByRequesterIdAndEventId(userId, eventId);
+    }
 
     @Override
     public List<ParticipationRequestDto> getEventRequests(Long userId, Long eventId) {
@@ -195,6 +202,8 @@ public class EventRequestServiceImpl implements EventRequestService {
         } else {
             throw new ConflictException("Количество участников события не может превышать " + event.getParticipantLimit());
         }
+
+        collectorClient.sendRegister(userId, eventId);
         return ParticipationRequestMapper.toDto(eventRequestRepository.save(request), participant);
     }
 

@@ -60,4 +60,6 @@ public class Event {
 
     @Column(name = "published_on")
     LocalDateTime publishedOn;
+
+    double rating;
 }

@@ -26,6 +26,6 @@ message RecommendedEventProto {
 
 service RecommendationController {
   rpc GetRecommendationsForUser(UserPredictionsRequestProto) returns (stream RecommendedEventProto);
-  rpc GetSimilarEvents(SimilarEventsRequestProto) returns (RecommendedEventProto);
+  rpc GetSimilarEvents(SimilarEventsRequestProto) returns (stream RecommendedEventProto);
   rpc GetInteractionsCount(InteractionsCountRequestProto) returns (stream RecommendedEventProto);
 }

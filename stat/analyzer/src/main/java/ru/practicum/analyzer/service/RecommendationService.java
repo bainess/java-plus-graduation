@@ -18,48 +18,268 @@ import java.util.stream.Collectors;
 public class RecommendationService {
     private final UserActionRepository userActionRepository;
     private final SimilarityRepository similarityRepository;
+    private static final int K = 5;
 
     public List<RecommendedEventProto> getRecommendationsForUser(long userId, int maxResult) {
-        Instant now = Instant.now();
-        Instant weekAgo = now.minus(7, ChronoUnit.DAYS);
+        // события с которыми userId взаимодействовал недавно. вернуть пустой список, если их нет
+        Set<UserAction> userInteractions = getRecentUserAction(userId, K);
+        if (userInteractions.isEmpty()) return List.of();
 
-        List<UserAction> eventsUserInteracted = userActionRepository
-                .findTopNByUserIdAndTimestampBetweenOrderByTimestampDesc(userId, weekAgo, now, maxResult);
-        if (eventsUserInteracted.isEmpty()) return List.of();
-
-        Map<Long, List<EventSimilarity>> similaritiesByEvent =
-                eventsUserInteracted.stream()
-                        .collect(Collectors.toMap(
-                                UserAction::getEventId,
-                                action -> getSimilaritiesUserNotInteracted(
-                                        action.getEventId(),
-                                        userId,
-                                        maxResult
-                                )
-                        ));
+        //Найти мероприятия, похожие на те,
+        // что отобрали на предыдущем этапе, но при этом пользователь с ними не взаимодействовал.
+        Map<Long, Double> similarEvents = findSimilarNewEvents(userId, userInteractions);
+// Отсортировать найденные мероприятия по коэффициенту подобия от большего к меньшему.
+// Выбрать из них первые N мероприятий.
+        List<Long> topEvents = selectTopNNewEvents(similarEvents, K);
 
         List<RecommendedEventProto> recommendations = new ArrayList<>();
 
-        for (Map.Entry<Long, List<EventSimilarity>> entry : similaritiesByEvent.entrySet()) {
+        for (Long eventId : topEvents) {
+            //        Выгрузить K просмотренных мероприятий, максимально похожих на предсказываемое.
+//        Важно найти именно максимально похожие мероприятия,
+//        с которыми пользователь уже взаимодействовал.
+            List<EventSimilarity> neighbours = findKNearestInteractedEvents(userId, eventId, K);
 
-            long sourceEventId = entry.getKey();
-            List<EventSimilarity> similarities = entry.getValue();
+            if (neighbours.isEmpty()) {
+                continue;
+            }
+            // Для всех мероприятий,
+            // полученных на предыдущем этапе, выгрузить оценки, которые поставил пользователь.
+            Map<Long, Double> ratings = getUserRatings(userId, neighbours, eventId);
+
+            if (ratings.isEmpty()) {
+                continue;
+            }
+            // Вычислить сумму взвешенных оценок.
+            // Используя коэффициенты подобия, полученные на шаге a,
+            // и оценки, полученные на шаге b, вычислить сумму взвешенных оценок
+            // (перемножить оценки мероприятий с их коэффициентами подобия,
+            // все полученные произведения сложить).
+            double weightedRatingsSum =
+                    calculateWeightedRatingsSum(
+                            neighbours,
+                            ratings,
+                            eventId
+                    );
+            // Сложить все коэффициенты подобия, полученные на шаге a.
+            double similaritySum =
+                    calculateSimilaritySum(
+                            neighbours,
+                            ratings,
+                            eventId
+                    );
+
+            if (similaritySum == 0.0) {
+                continue;
+            }
+            // Поделить сумму взвешенных оценок на сумму коэффициентов.
+            double predictedRating =
+                    calculatePredictedRating(
+                            weightedRatingsSum,
+                            similaritySum
+                    );
+
+            recommendations.add(
+                    RecommendedEventProto.newBuilder()
+                            .setEventId(eventId)
+                            .setScore(predictedRating)
+                            .build()
+            );
+        }
+
+        return recommendations;
+    }
+
+    // Поделить сумму взвешенных оценок на сумму коэффициентов.
+    private double calculatePredictedRating(
+            double weightedRatingsSum,
+            double similaritySum
+    ) {
+        return weightedRatingsSum / similaritySum;
+    }
+
+    // Сложить все коэффициенты подобия, полученные в calculateWeightedRatingsSum.
+    private double calculateSimilaritySum(
+            List<EventSimilarity> neighbors,
+            Map<Long, Double> ratings,
+            long eventId
+    ) {
+        double sum = 0.0;
+
+        for (EventSimilarity neighbor : neighbors) {
+
+            long neighborEventId =
+                    getOtherEventId(
+                            neighbor,
+                            eventId
+                    );
+
+            if (!ratings.containsKey(
+                    neighborEventId
+            )) {
+                continue;
+            }
+
+            sum += neighbor.getScore();
+        }
+
+        return sum;
+    }
+
+    // Вычислить сумму взвешенных оценок.
+// Используя коэффициенты подобия, полученные на шаге a,
+// и оценки, полученные на шаге b, вычислить сумму взвешенных оценок
+// (перемножить оценки мероприятий с их коэффициентами подобия,
+// все полученные произведения сложить).
+    private double calculateWeightedRatingsSum(
+            List<EventSimilarity> neighbors,
+            Map<Long, Double> ratings,
+            long eventId
+    ) {
+        double sum = 0.0;
+
+        for (EventSimilarity neighbor : neighbors) {
+
+            long neighborEventId =
+                    getOtherEventId(
+                            neighbor,
+                            eventId
+                    );
+
+            Double rating =
+                    ratings.get(neighborEventId);
+
+            if (rating == null) {
+                continue;
+            }
+
+            sum += neighbor.getScore() * rating;
+        }
+
+        return sum;
+    }
+
+    // Для всех мероприятий,
+// полученных на предыдущем этапе, выгрузить оценки, которые поставил пользователь.
+    private Map<Long, Double> getUserRatings(
+            long userId,
+            List<EventSimilarity> neighbors,
+            long eventId
+    ) {
+        List<Long> neighborEventIds = neighbors.stream()
+                .map(similarity ->
+                        getOtherEventId(similarity, eventId))
+                .toList();
+
+        return userActionRepository
+                .findByUserIdAndEventIdIn(userId, neighborEventIds)
+                .stream()
+                .filter(action -> action.getRating() != null)
+                .collect(Collectors.toMap(
+                        UserAction::getEventId,
+                        UserAction::getRating
+                ));
+    }
+
+    //        Выгрузить K просмотренных мероприятий, максимально похожих на предсказываемое.
+//        Важно найти именно максимально похожие мероприятия,
+//        с которыми пользователь уже взаимодействовал.
+    private List<EventSimilarity> findKNearestInteractedEvents(
+            long userId,
+            long eventId,
+            int k
+    ) {
+        Set<Long> interactedEventIds =
+                userActionRepository.findEventIdsByUserId(userId);
+
+        return similarityRepository.findSimilarEvents(eventId)
+                .stream()
+                .filter(similarity -> {
+
+                    long neighborEventId =
+                            getOtherEventId(
+                                    similarity,
+                                    eventId
+                            );
+
+                    return interactedEventIds.contains(
+                            neighborEventId
+                    );
+                })
+                .sorted(
+                        Comparator.comparing(
+                                EventSimilarity::getScore
+                        ).reversed()
+                )
+                .limit(k)
+                .toList();
+    }
+
+    // Отсортировать найденные мероприятия по коэффициенту подобия от большего к меньшему.
+// Выбрать из них первые N мероприятий.
+    private List<Long> selectTopNNewEvents(
+            Map<Long, Double> candidates,
+            int n
+    ) {
+        return candidates.entrySet()
+                .stream()
+                .sorted(
+                        Map.Entry.<Long, Double>comparingByValue()
+                                .reversed()
+                )
+                .limit(n)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
+
+    // события с которыми userId взаимодействовал недавно
+    private Set<UserAction> getRecentUserAction(long userId, int n) {
+        Instant now = Instant.now();
+        Instant weekAgo = now.minus(7, ChronoUnit.DAYS);
+        return userActionRepository
+                .findTopNByUserIdAndTimestampBetweenOrderByTimestampDesc(userId, weekAgo, now, n);
+
+    }
+
+    //Найти мероприятия, похожие на те,
+    // что отобрали на предыдущем этапе, но при этом пользователь с ними не взаимодействовал.
+    private Map<Long, Double> findSimilarNewEvents(
+            long userId,
+            Set<UserAction> recentActions
+    ) {
+        Set<Long> interactedEventIds =
+                userActionRepository.findEventIdsByUserId(userId);
+
+        Map<Long, Double> candidates = new HashMap<>();
+
+        for (UserAction action : recentActions) {
+
+            List<EventSimilarity> similarities =
+                    similarityRepository.findSimilarEvents(
+                            action.getEventId()
+                    );
 
             for (EventSimilarity similarity : similarities) {
 
-                long recommendedEventId =
-                        getOtherEventId(similarity, sourceEventId);
+                long similarEventId =
+                        getOtherEventId(
+                                similarity,
+                                action.getEventId()
+                        );
 
-                RecommendedEventProto recommendation =
-                        RecommendedEventProto.newBuilder()
-                                .setEventId(recommendedEventId)
-                                .setScore(similarity.getScore())
-                                .build();
+                if (interactedEventIds.contains(similarEventId)) {
+                    continue;
+                }
 
-                recommendations.add(recommendation);
+                candidates.merge(
+                        similarEventId,
+                        similarity.getScore(),
+                        Math::max
+                );
             }
         }
-        return recommendations;
+
+        return candidates;
     }
 
     private long getOtherEventId(EventSimilarity similarity, long eventId) {
@@ -78,7 +298,10 @@ public class RecommendationService {
         for (EventSimilarity similarity : unseenSimilarities) {
             Long id = (eventId == similarity.getEventA())
                     ? similarity.getEventB() : similarity.getEventA();
-            RecommendedEventProto res = RecommendedEventProto.newBuilder().setEventId(id).setScore(similarity.getScore()).build();
+            RecommendedEventProto res = RecommendedEventProto.newBuilder()
+                    .setEventId(id)
+                    .setScore(similarity
+                            .getScore()).build();
             result.add(res);
         }
         return result;
@@ -104,6 +327,8 @@ public class RecommendationService {
     }
 
     public List<RecommendedEventProto> getEventsRatings(List<Long> eventIds) {
+        if (eventIds.isEmpty() || eventIds == null) return List.of();
+
         return eventIds.stream().map(eventId -> RecommendedEventProto.newBuilder()
                 .setEventId(eventId)
                 .setScore(userActionRepository.sumRatingByEventId(eventId))
