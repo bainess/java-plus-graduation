@@ -3,10 +3,9 @@ package ru.practicum.aggregator.kafka;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.practicum.ewm.stats.avro.UserActionAvro;
 
 import java.util.Properties;
 
@@ -24,7 +23,7 @@ public class KafkaProducerConfig {
 
         properties.put(
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class
+                LongSerializer.class
         );
 
         properties.put(

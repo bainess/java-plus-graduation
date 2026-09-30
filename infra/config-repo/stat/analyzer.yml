@@ -22,9 +22,9 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: ru.practicum.ewm.stats.collector.config.AvroSerializer
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+#      value-serializer: ru.practicum.ewm.stats.collector.config.AvroSerializer
 
 grpc:
   server:
