@@ -36,3 +36,10 @@ resilience:
     configs:
       default:
         timeout-duration: 3s
+grpc:
+  client:
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext

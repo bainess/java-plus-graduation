@@ -14,16 +14,16 @@ import stats.service.collector.UserActionControllerGrpc;
 @RequiredArgsConstructor
 public class CollectorKafkaProducer {
     private static final String USER_ACTIONS_TOPIC = "stats.user-actions.v1";
-    private final Producer<String, SpecificRecordBase> producer;
+    private final Producer<Long, SpecificRecordBase> producer;
 
     public void send(UserActionAvro userAction) {
         if (userAction == null) {
             log.error("Cannot send null of user action");
             return;
         }
-        String key = String.valueOf(userAction.getEventId());
+        Long key = userAction.getEventId();
         log.info("Sending user action to topic '{}", USER_ACTIONS_TOPIC);
-        ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(USER_ACTIONS_TOPIC, key, userAction);
+        ProducerRecord<Long, SpecificRecordBase> record = new ProducerRecord<>(USER_ACTIONS_TOPIC, key, userAction);
         producer.send(record, (metadata, exception) -> {
             if (exception != null) {
                 log.error("Failed to send user action to Kafka", exception);

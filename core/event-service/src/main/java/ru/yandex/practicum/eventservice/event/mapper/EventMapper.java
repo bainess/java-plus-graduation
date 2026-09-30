@@ -1,7 +1,6 @@
 package ru.yandex.practicum.eventservice.event.mapper;
 
 
-import ru.practicum.ewm.stats.service.dashboard.RecommendedEventProto;
 import ru.practicum.explorewithme.shareddto.dto.category.CategoryDto;
 import ru.practicum.explorewithme.shareddto.dto.event.*;
 import ru.practicum.explorewithme.shareddto.dto.location.ShortLocationDto;
@@ -11,7 +10,6 @@ import ru.yandex.practicum.eventservice.event.model.Location;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public final class EventMapper {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

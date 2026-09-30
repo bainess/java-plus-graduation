@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Import;
 import ru.practicum.explorewithme.shareddto.exception.ErrorHandler;
 
 @SpringBootApplication(scanBasePackages = {
-        "ru.yandex.practicum.eventservice"})
+        "ru.yandex.practicum.eventservice",
+        "ru.practicum.explorewithme.stats.client"})
 @EnableFeignClients
 @Import(ErrorHandler.class)
 public class EventServiceApp {

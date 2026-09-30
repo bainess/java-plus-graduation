@@ -30,7 +30,6 @@ import ru.yandex.practicum.eventservice.event.service.predicate.EventPredicate;
 import ru.yandex.practicum.eventservice.feign.client.EventRequestClient;
 import ru.yandex.practicum.eventservice.feign.client.LocationClient;
 import ru.yandex.practicum.eventservice.feign.client.UserClient;
-import ru.yandex.practicum.eventservice.statistics.StatisticsClient;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

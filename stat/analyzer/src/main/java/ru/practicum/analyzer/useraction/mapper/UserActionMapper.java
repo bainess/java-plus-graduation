@@ -1,9 +1,12 @@
 package ru.practicum.analyzer.useraction.mapper;
 
+import org.checkerframework.checker.units.qual.C;
+import org.springframework.stereotype.Component;
 import ru.practicum.analyzer.useraction.model.UserAction;
 import ru.practicum.ewm.stats.avro.ActionTypeAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
 
+@Component
 public class UserActionMapper {
     public UserAction mapToUserAction(UserActionAvro avro) {
         return UserAction.builder()

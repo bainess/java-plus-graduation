@@ -1,8 +1,9 @@
 package ru.practicum.analyzer.similarity.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.analyzer.similarity.model.EventSimilarity;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
-
+@Component
 public class EventSimilarityMapper {
     public EventSimilarity mapToEventSimilarity(EventSimilarityAvro avro) {
 

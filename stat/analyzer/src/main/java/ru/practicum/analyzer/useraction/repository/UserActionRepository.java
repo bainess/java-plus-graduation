@@ -14,27 +14,23 @@ import java.util.Set;
 
 public interface UserActionRepository extends JpaRepository<UserAction, Long> {
 
-    Set<UserAction> findTopNByUserIdAndTimestampBetweenOrderByTimestampDesc(
+    List<UserAction> findByUserIdAndTimestampBetweenOrderByTimestampDesc(
             Long userId,
-            Instant weekAgo,
-            Instant now,
-            int N
-            );
+            Instant from,
+            Instant to,
+            Pageable pageable
+    );
 
     List<UserAction> findByUserIdAndEventIdIn(
             long userId,
             List<Long> eventIds
     );
 
-    List<UserAction> findByIdUserIdOrderByTimestampDesc(
+    List<UserAction> findByUserIdOrderByTimestampDesc(
             long userId,
             Pageable pageable
     );
 
-    boolean existsByIdUserIdAndIdEventId(
-            long userId,
-            long eventId
-    );
 
     Set<Long> findEventIdsByUserId(Long userId);
 

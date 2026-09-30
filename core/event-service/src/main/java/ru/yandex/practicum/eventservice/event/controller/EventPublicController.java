@@ -1,7 +1,6 @@
 package ru.yandex.practicum.eventservice.event.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,10 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.shareddto.dto.event.EventFullDto;
 import ru.practicum.explorewithme.shareddto.dto.event.EventShortDto;
 import ru.practicum.explorewithme.shareddto.exception.BadRequestException;
-import ru.yandex.practicum.eventservice.config.AppProperties;
 import ru.yandex.practicum.eventservice.event.dto.EventSearchParams;
 import ru.yandex.practicum.eventservice.event.service.EventService;
-import ru.yandex.practicum.eventservice.statistics.StatisticsClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,9 +21,7 @@ import java.util.List;
 @Slf4j
 public class EventPublicController {
     private final EventService eventService;
-    private final AppProperties appProperties;
 
-    private final StatisticsClient statsClient;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

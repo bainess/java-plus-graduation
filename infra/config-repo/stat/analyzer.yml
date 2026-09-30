@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: analyzer-server
+    name: analyzer
   datasource:
     url: jdbc:postgresql://localhost:5432/recommendation_db
     username: postgres
@@ -28,7 +28,7 @@ spring:
 
 grpc:
   server:
-    port: 0
+    port: 9090
 
 logging:
   level:

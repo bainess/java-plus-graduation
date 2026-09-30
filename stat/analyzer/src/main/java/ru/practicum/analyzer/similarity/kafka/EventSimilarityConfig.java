@@ -4,6 +4,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +15,8 @@ import java.util.Map;
 public class EventSimilarityConfig {
 
     @Bean
-    public KafkaConsumer<String, SpecificRecordBase> kafkaConsumer() {
+    @Qualifier("similarityKafkaConsumer")
+    public KafkaConsumer<String, SpecificRecordBase> eventSimilarityKafkaConsumer() {
         Map<String, Object> properties = new HashMap<>();
 
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,

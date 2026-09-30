@@ -13,16 +13,17 @@ import stats.service.collector.UserActionProto;
 @Slf4j
 @GrpcService
 @RequiredArgsConstructor
-public class CollectorGrpcController extends UserActionControllerGrpc.UserActionControllerImplBase {
+public class UserActionController extends UserActionControllerGrpc.UserActionControllerImplBase {
     private final CollectorController controller;
 
     @Override
     public void collectUserAction(UserActionProto request, StreamObserver<Empty> responseObserver) {
         try {
+            log.info("Получен proto request={}", request);
             controller.sendMessage(request);
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
-
+            log.info("Сообщение отправлено");
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
                     Status.INTERNAL

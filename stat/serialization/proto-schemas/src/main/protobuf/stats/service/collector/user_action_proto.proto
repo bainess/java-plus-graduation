@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package collector.user;
+package stats.service.collector;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 

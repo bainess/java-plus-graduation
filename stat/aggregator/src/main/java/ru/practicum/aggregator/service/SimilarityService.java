@@ -1,6 +1,7 @@
 package ru.practicum.aggregator.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.stats.avro.ActionTypeAvro;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SimilarityService {
@@ -44,7 +46,7 @@ public class SimilarityService {
                 continue;
             }
             double score = countSimilarity(eventA,eventB);
-
+            log.info("Similarity for id={}", result);
             result.add(EventSimilarityAvro.newBuilder()
                     .setEventA(eventA)
                     .setEventB(eventB)

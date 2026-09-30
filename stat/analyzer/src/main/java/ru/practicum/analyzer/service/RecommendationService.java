@@ -1,6 +1,8 @@
 package ru.practicum.analyzer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.analyzer.similarity.model.EventSimilarity;
 import ru.practicum.analyzer.similarity.repository.SimilarityRepository;
@@ -236,8 +238,10 @@ public class RecommendationService {
     private Set<UserAction> getRecentUserAction(long userId, int n) {
         Instant now = Instant.now();
         Instant weekAgo = now.minus(7, ChronoUnit.DAYS);
+        Pageable pageable = PageRequest.of(0, n);
         return userActionRepository
-                .findTopNByUserIdAndTimestampBetweenOrderByTimestampDesc(userId, weekAgo, now, n);
+                .findByUserIdAndTimestampBetweenOrderByTimestampDesc(userId, weekAgo, now, pageable)
+                .stream().collect(Collectors.toSet());
 
     }
 

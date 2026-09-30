@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.practicum.analyzer.useraction.service.UserEventService;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
@@ -17,11 +18,20 @@ import java.util.List;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class UserActionConsumer {
     private static final String USER_ACTION_TOPIC = "stats.user-actions.v1";
+
     private final KafkaConsumer<String, SpecificRecordBase> kafkaConsumer;
     private final UserEventService service;
+
+    public UserActionConsumer(
+            @Qualifier("userActionKafkaConsumer")
+            KafkaConsumer<String, SpecificRecordBase> kafkaConsumer,
+            UserEventService service
+    ) {
+        this.kafkaConsumer = kafkaConsumer;
+        this.service = service;
+    }
 
     public void start() {
         try {
@@ -56,5 +66,4 @@ public class UserActionConsumer {
             }
         }
     }
-
 }

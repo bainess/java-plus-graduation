@@ -42,5 +42,3 @@ resilience4j:
       configs:
         default:
           timeout-duration: 3s
-stats-server:
-  id: stats-server
