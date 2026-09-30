@@ -19,6 +19,7 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     public void getSimilarEvents(
             SimilarEventsRequestProto request,
             StreamObserver<RecommendedEventProto> responseObserver
+
     ) {
         try {
             List<RecommendedEventProto> result = recommendationService.getSimilarEvents(
