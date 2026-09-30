@@ -46,6 +46,7 @@ public class RecommendationGrpcController extends RecommendationControllerGrpc.R
 
             responseObserver.onCompleted();
         } catch (Exception e) {
+
             responseObserver.onError(e);
         }
     }
