@@ -16,7 +16,7 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     private final RecommendationService recommendationService;
 
     @Override
-    public void getSimilarEvents(
+    public void GetSimilarEvents(
             SimilarEventsRequestProto request,
             StreamObserver<RecommendedEventProto> responseObserver
 
@@ -53,7 +53,7 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     }
 
     @Override
-    public void getRecommendationsForUser(
+    public void GetRecommendationsForUser(
             UserPredictionsRequestProto proto,
             StreamObserver<RecommendedEventProto> responseObserver
     ) {
