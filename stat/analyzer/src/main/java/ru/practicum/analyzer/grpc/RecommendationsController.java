@@ -15,7 +15,6 @@ import java.util.List;
 public class RecommendationsController extends RecommendationControllerGrpc.RecommendationControllerImplBase {
     private final RecommendationService recommendationService;
 
-
     @Override
     public void getSimilarEvents(
             SimilarEventsRequestProto request,
