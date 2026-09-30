@@ -13,7 +13,11 @@ import java.util.List;
 @Slf4j
 @GrpcService
 @RequiredArgsConstructor
+<<<<<<<< HEAD:stat/analyzer/src/main/java/ru/practicum/analyzer/grpc/RecommendationsController.java
 public class RecommendationsController extends RecommendationControllerGrpc.RecommendationControllerImplBase {
+========
+public class RecommendationController extends RecommendationControllerGrpc.RecommendationControllerImplBase {
+>>>>>>>> 8a100de6be891c03cfbdbc328c52110e52fb7b21:stat/analyzer/src/main/java/ru/practicum/analyzer/grpc/RecommendationController.java
     private final RecommendationService recommendationService;
 
     @Override
