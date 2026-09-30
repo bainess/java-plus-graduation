@@ -16,7 +16,7 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     private final RecommendationService recommendationService;
 
     @Override
-    public void GetSimilarEvents(
+    public void getSimilarEvents(
             SimilarEventsRequestProto request,
             StreamObserver<RecommendedEventProto> responseObserver
 
@@ -37,7 +37,7 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     }
 
     @Override
-    public void GetInteractionsCount(InteractionsCountRequestProto proto,
+    public void getInteractionsCount(InteractionsCountRequestProto proto,
                                      StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             List<RecommendedEventProto> recommendations = recommendationService
@@ -53,7 +53,7 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     }
 
     @Override
-    public void GetRecommendationsForUser(
+    public void getRecommendationsForUser(
             UserPredictionsRequestProto proto,
             StreamObserver<RecommendedEventProto> responseObserver
     ) {
