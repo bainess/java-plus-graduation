@@ -16,6 +16,7 @@ public class AnalyzerApp {
                 context.getBean(UserActionConsumer.class);
         EventSimilarityConsumer eventSimilarityConsumer =
                 context.getBean(EventSimilarityConsumer.class);
+
         new Thread(userActionConsumer::start).start();
         new Thread(eventSimilarityConsumer::start).start();
     }
