@@ -36,7 +36,7 @@ public class RecommendationGrpcController extends RecommendationControllerGrpc.R
     }
 
     @Override
-    public void getInteractionsCount(InteractionsCountRequestProto proto,
+    public void GetInteractionsCount(InteractionsCountRequestProto proto,
                                      StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             List<RecommendedEventProto> recommendations = recommendationService
