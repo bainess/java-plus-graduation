@@ -1,6 +1,7 @@
 package ru.practicum.analyzer.grpc;
 
 import io.grpc.stub.StreamObserver;
+import jakarta.ws.rs.HEAD;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
