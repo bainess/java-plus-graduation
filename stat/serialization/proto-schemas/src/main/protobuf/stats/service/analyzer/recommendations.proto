@@ -24,7 +24,7 @@ message RecommendedEventProto {
   double score = 2;
 }
 
-service RecommendationController {
+service RecommendationsController {
   rpc GetRecommendationsForUser(UserPredictionsRequestProto) returns (stream RecommendedEventProto);
   rpc GetSimilarEvents(SimilarEventsRequestProto) returns (stream RecommendedEventProto);
   rpc GetInteractionsCount(InteractionsCountRequestProto) returns (stream RecommendedEventProto);
