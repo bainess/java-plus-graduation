@@ -15,8 +15,8 @@ import java.util.stream.StreamSupport;
 public class AnalyzerClient {
 
     @GrpcClient("analyzer")
-    private RecommendationControllerGrpc
-            .RecommendationControllerBlockingStub client;
+    private RecommendationsControllerGrpc
+            .RecommendationsControllerBlockingStub client;
 
     public Stream<RecommendedEventProto> getSimilarEvents(long eventId, long userId, int maxResults) {
         SimilarEventsRequestProto request = SimilarEventsRequestProto.newBuilder()
