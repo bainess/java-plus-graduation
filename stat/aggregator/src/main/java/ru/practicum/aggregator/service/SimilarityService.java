@@ -47,9 +47,13 @@ public class SimilarityService {
             }
             double score = countSimilarity(eventA,eventB);
             log.info("Similarity for id={}", result);
+
+            long first = Math.min(eventA, eventB);
+            long second = Math.max(eventA, eventB);
+
             result.add(EventSimilarityAvro.newBuilder()
-                    .setEventA(eventA)
-                    .setEventB(eventB)
+                    .setEventA(first)
+                    .setEventB(second)
                     .setScore(score)
                     .setTimestamp(action.getTimestamp())
                     .build());

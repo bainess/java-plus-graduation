@@ -18,12 +18,12 @@ import java.util.List;
 @Component
 public class EventSimilarityConsumer {
     private static final String EVENT_SIMILARITY_TOPIC = "stats.events-similarity.v1";
-    private final KafkaConsumer<String, SpecificRecordBase> kafkaConsumer;
+    private final KafkaConsumer<Long, SpecificRecordBase> kafkaConsumer;
     private final SimilarityService similarityService;
 
     public EventSimilarityConsumer(
             @Qualifier("similarityKafkaConsumer")
-            KafkaConsumer<String, SpecificRecordBase> kafkaConsumer,
+            KafkaConsumer<Long, SpecificRecordBase> kafkaConsumer,
             SimilarityService similarityService
     ) {
         this.kafkaConsumer = kafkaConsumer;
@@ -35,10 +35,10 @@ public class EventSimilarityConsumer {
             kafkaConsumer.subscribe(List.of(EVENT_SIMILARITY_TOPIC));
 
             while (true) {
-                ConsumerRecords<String, SpecificRecordBase> records =
+                ConsumerRecords<Long, SpecificRecordBase> records =
                         kafkaConsumer.poll(Duration.ofMillis(100));
 
-                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
+                for (ConsumerRecord<Long, SpecificRecordBase> record : records) {
                     EventSimilarityAvro similarity = (EventSimilarityAvro) record.value();
 
                     log.info("Received similarity: eventA={}, eventB={}, similarity={}, timestamp={}",

@@ -13,7 +13,7 @@ import java.util.Map;
 @Configuration
 public class UserActionConfig {
     @Bean
-    public KafkaConsumer<String, SpecificRecordBase> userActionKafkaConsumer() {
+    public KafkaConsumer<Long, SpecificRecordBase> userActionKafkaConsumer() {
         Map<String, Object> properties = new HashMap<>();
 
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,

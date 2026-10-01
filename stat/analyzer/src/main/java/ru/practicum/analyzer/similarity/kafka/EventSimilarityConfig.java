@@ -16,7 +16,7 @@ public class EventSimilarityConfig {
 
     @Bean
     @Qualifier("similarityKafkaConsumer")
-    public KafkaConsumer<String, SpecificRecordBase> eventSimilarityKafkaConsumer() {
+    public KafkaConsumer<Long, SpecificRecordBase> eventSimilarityKafkaConsumer() {
         Map<String, Object> properties = new HashMap<>();
 
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,

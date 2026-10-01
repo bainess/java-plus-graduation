@@ -23,8 +23,8 @@ import java.util.List;
 public class UserActionConsumer {
     private static final String USER_ACTIONS_TOPIC = "stats.user-actions.v1";
     private static final String EVENT_SIMILARITY_TOPIC = "stats.events-similarity.v1";
-    private final KafkaConsumer<String, SpecificRecordBase> kafkaConsumer;
-    private final KafkaProducer<String, SpecificRecordBase> producer;
+    private final KafkaConsumer<Long, SpecificRecordBase> kafkaConsumer;
+    private final KafkaProducer<Long, SpecificRecordBase> producer;
     private final SimilarityService service;
 
     public void start() {
@@ -32,10 +32,10 @@ try {
     kafkaConsumer.subscribe(List.of(USER_ACTIONS_TOPIC));
 
     while (true) {
-        ConsumerRecords<String, SpecificRecordBase> records =
+        ConsumerRecords<Long, SpecificRecordBase> records =
                 kafkaConsumer.poll(Duration.ofMillis(100));
 
-        for (ConsumerRecord<String, SpecificRecordBase> record : records) {
+        for (ConsumerRecord<Long, SpecificRecordBase> record : records) {
             UserActionAvro action = (UserActionAvro) record.value();
 
             log.info("Received action: userId={}, eventId={}, actionType={}, timestamp={}",
@@ -58,7 +58,6 @@ try {
 } finally {
     try {
         producer.flush();
-        kafkaConsumer.commitSync();
     } finally {
         kafkaConsumer.close();
         log.info("Consumer closed");
@@ -69,7 +68,7 @@ try {
     }
 
     private void sendSimilarityData(EventSimilarityAvro data) {
-        ProducerRecord<String, SpecificRecordBase> record =
+        ProducerRecord<Long, SpecificRecordBase> record =
                 new ProducerRecord<>(
                         EVENT_SIMILARITY_TOPIC,
                         data

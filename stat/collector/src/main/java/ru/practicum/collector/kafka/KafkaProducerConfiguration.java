@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.practicum.ewm.stats.avro.UserActionAvro;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class KafkaProducerConfiguration {
     private String bootstrapServer;
 
     @Bean
-    public Producer<Long, SpecificRecordBase> producer() {
+    public Producer<Long, UserActionAvro> producer() {
         Map<String, Object> properties = new HashMap<>();
 
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);

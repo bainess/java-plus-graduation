@@ -21,12 +21,12 @@ import java.util.List;
 public class UserActionConsumer {
     private static final String USER_ACTION_TOPIC = "stats.user-actions.v1";
 
-    private final KafkaConsumer<String, SpecificRecordBase> kafkaConsumer;
+    private final KafkaConsumer<Long, SpecificRecordBase> kafkaConsumer;
     private final UserEventService service;
 
     public UserActionConsumer(
             @Qualifier("userActionKafkaConsumer")
-            KafkaConsumer<String, SpecificRecordBase> kafkaConsumer,
+            KafkaConsumer<Long, SpecificRecordBase> kafkaConsumer,
             UserEventService service
     ) {
         this.kafkaConsumer = kafkaConsumer;
@@ -38,10 +38,10 @@ public class UserActionConsumer {
             kafkaConsumer.subscribe(List.of(USER_ACTION_TOPIC));
 
             while (true) {
-                ConsumerRecords<String, SpecificRecordBase> records =
+                ConsumerRecords<Long, SpecificRecordBase> records =
                         kafkaConsumer.poll(Duration.ofMillis(100));
 
-                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
+                for (ConsumerRecord<Long, SpecificRecordBase> record : records) {
                     UserActionAvro action = (UserActionAvro) record.value();
 
                     log.info("Received similarity: userId={}, eventId={}, actionType={}, timestamp={}",

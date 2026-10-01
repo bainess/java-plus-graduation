@@ -9,6 +9,9 @@ grpc:
   server:
     port: 0
 
+kafka:
+  bootstrap-servers: localhost:9092
+
 logging:
   level:
     org.springframework.boot.context.config: DEBUG

@@ -14,7 +14,7 @@ import stats.service.collector.UserActionControllerGrpc;
 @RequiredArgsConstructor
 public class CollectorKafkaProducer {
     private static final String USER_ACTIONS_TOPIC = "stats.user-actions.v1";
-    private final Producer<Long, SpecificRecordBase> producer;
+    private final Producer<Long, UserActionAvro> producer;
 
     public void send(UserActionAvro userAction) {
         if (userAction == null) {
@@ -23,7 +23,7 @@ public class CollectorKafkaProducer {
         }
         Long key = userAction.getEventId();
         log.info("Sending user action to topic '{}", USER_ACTIONS_TOPIC);
-        ProducerRecord<Long, SpecificRecordBase> record = new ProducerRecord<>(USER_ACTIONS_TOPIC, key, userAction);
+        ProducerRecord<Long, UserActionAvro> record = new ProducerRecord<>(USER_ACTIONS_TOPIC, key, userAction);
         producer.send(record, (metadata, exception) -> {
             if (exception != null) {
                 log.error("Failed to send user action to Kafka", exception);
