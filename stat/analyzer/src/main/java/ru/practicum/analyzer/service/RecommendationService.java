@@ -331,7 +331,7 @@ public class RecommendationService {
     }
 
     public List<RecommendedEventProto> getEventsRatings(List<Long> eventIds) {
-        if (eventIds.isEmpty() || eventIds == null) return List.of();
+        if (eventIds == null || eventIds.isEmpty()) return List.of();
 
         return eventIds.stream().map(eventId -> RecommendedEventProto.newBuilder()
                 .setEventId(eventId)
