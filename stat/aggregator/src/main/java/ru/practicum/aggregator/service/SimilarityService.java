@@ -14,14 +14,13 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class SimilarityService {
     //хранит веса пользователей, взаимодействовавших с меропрятием(и)
-    private final Map<Long, Map<Long, Double>> userActionWeights;
+    private final Map<Long, Map<Long, Double>> userActionWeights = new HashMap<>();
     // хранит сумму весов мероприятия
-    private final Map<Long, Double> eventWeightsSums;
+    private final Map<Long, Double> eventWeightsSums = new HashMap<>();
     // хранит сумму минимальных весов, для пар мероприятий
-    private final Map<Long, Map<Long, Double>> minWeightsSums;
+    private final Map<Long, Map<Long, Double>> minWeightsSums = new HashMap<>();
 
     public List<EventSimilarityAvro> process(UserActionAvro action) {
         Long eventA = action.getEventId();
@@ -36,8 +35,8 @@ public class SimilarityService {
             return List.of();
         }
 
-        saveNewWeight(action);
         saveMinWeightsSums(action, oldWeight, newWeight);
+        saveNewWeight(action);
         saveEventWeightSum(action, difference);
 
         List<EventSimilarityAvro> result = new ArrayList<>();
@@ -114,8 +113,8 @@ public class SimilarityService {
         long second = Math.max(eventA, eventB);
 
         minWeightsSums
-                .computeIfAbsent(first, e -> new HashMap<>())
-                .put(second, sum);
+                .getOrDefault(first, Map.of())
+                .getOrDefault(second, 0.0);
     }
 
     public Double getMinWeightSum(long eventA, long eventB) {
@@ -123,7 +122,7 @@ public class SimilarityService {
         long second = Math.max(eventA, eventB);
 
         return minWeightsSums
-                .computeIfAbsent(first, e -> new HashMap<>())
+                .getOrDefault(first, Map.of())
                 .getOrDefault(second, 0.0);
     }
 
