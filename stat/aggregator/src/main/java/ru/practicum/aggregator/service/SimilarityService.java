@@ -41,6 +41,7 @@ public class SimilarityService {
         saveEventWeightSum(action, difference);
 
         List<EventSimilarityAvro> result = new ArrayList<>();
+
         for (Long eventB : userActionWeights.keySet()) {
             if (eventA.equals(eventB)) {
                 continue;
@@ -48,6 +49,9 @@ public class SimilarityService {
             double score = countSimilarity(eventA,eventB);
             log.info("Similarity for id={}", result);
 
+            if (score == 0.0) {
+                continue;
+            }
             long first = Math.min(eventA, eventB);
             long second = Math.max(eventA, eventB);
 
