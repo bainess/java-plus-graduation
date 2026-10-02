@@ -11,6 +11,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: ru.practicum.ewm.stats.collector.config.AvroSerializer
 
+
 grpc:
   server:
     port: 0

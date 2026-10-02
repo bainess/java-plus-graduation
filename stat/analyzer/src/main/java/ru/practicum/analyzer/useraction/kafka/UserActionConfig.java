@@ -26,6 +26,19 @@ public class UserActionConfig {
                 UserActionDeserializer.class);
         properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
                 "true");
+
+        properties.put(
+                ConsumerConfig.GROUP_ID_CONFIG,
+                "analyzer-group"
+        );
+        properties.put(
+                ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
+                false
+        );
+        properties.put(
+                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
+                "latest"
+        );
         return new KafkaConsumer<>(properties);
     }
 }

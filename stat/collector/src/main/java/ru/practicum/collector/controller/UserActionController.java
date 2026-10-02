@@ -18,12 +18,18 @@ public class UserActionController extends UserActionControllerGrpc.UserActionCon
 
     @Override
     public void collectUserAction(UserActionProto request, StreamObserver<Empty> responseObserver) {
+        log.info(
+                "gRPC request: eventId={}, timestamp={}, type={}",
+                request.getEventId(),
+                request.getTimestamp(),
+                request.getActionType()
+        );
         try {
             log.info("Получен proto request={}", request);
             controller.sendMessage(request);
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
-            log.info("Сообщение отправлено");
+            log.info("gRPC response sent: eventId={}", request.getEventId());
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
                     Status.INTERNAL
