@@ -77,6 +77,7 @@ public class SimilarityService {
     // рассчитывает сходство двух мероприятий
     private double countSimilarity(Long eventA, Long eventB) {
         double numerator = getMinWeightSum(eventA, eventB);
+        if (numerator == 0.0) return 0.0;
         double denominator = eventWeightsSums.get(eventA) * eventWeightsSums.get(eventB);
         if (denominator == 0.0) return 0.0;
         return numerator / Math.sqrt(denominator);
@@ -121,10 +122,8 @@ public class SimilarityService {
     public Double getMinWeightSum(long eventA, long eventB) {
         long first = Math.min(eventA, eventB);
         long second = Math.max(eventA, eventB);
-
-        return minWeightsSums
-                .computeIfAbsent(first, e -> new HashMap<>())
-                .getOrDefault(second, 0.0);
+        Map<Long, Double> inner = minWeightsSums.get(first);
+        return inner == null ? 0.0 : inner.getOrDefault(second, 0.0);
     }
 
 
