@@ -7,10 +7,7 @@ import ru.practicum.ewm.stats.avro.ActionTypeAvro;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,13 +33,13 @@ public class SimilarityService {
             return List.of();
         }
 
+        Set<Long> changedEvents = saveMinWeightsSums(action, oldWeight, newWeight);
         saveNewWeight(action);
-        saveMinWeightsSums(action, oldWeight, newWeight);
         saveEventWeightSum(action, difference);
 
         List<EventSimilarityAvro> result = new ArrayList<>();
 
-        for (Long eventB : userActionWeights.keySet()) {
+        for (Long eventB : changedEvents) {
             if (eventA.equals(eventB)) {
                 continue;
             }
@@ -77,6 +74,7 @@ public class SimilarityService {
     // рассчитывает сходство двух мероприятий
     private double countSimilarity(Long eventA, Long eventB) {
         double numerator = getMinWeightSum(eventA, eventB);
+        if (numerator == 0.0) return 0.0;
         double denominator = eventWeightsSums.get(eventA) * eventWeightsSums.get(eventB);
         if (denominator == 0.0) return 0.0;
         return numerator / Math.sqrt(denominator);
@@ -84,11 +82,12 @@ public class SimilarityService {
 
     // считает сумму минимальных весов всех пользователей,
     // взаимодействовавших с обоими сравниваемыми мероприятиями
-    private void saveMinWeightsSums(UserActionAvro action, double oldWeightA, double newWeightA) {
+    private Set<Long> saveMinWeightsSums(UserActionAvro action, double oldWeightA, double newWeightA) {
+        Set<Long> changedEvents = new HashSet<>();
         for (Map.Entry<Long, Map<Long, Double>> entry : userActionWeights.entrySet()) {
             Long eventB = entry.getKey();
 
-            if (action.getEventId() == eventB) {
+            if (Objects.equals(action.getEventId(), eventB)) {
                 continue;
             }
             Double weightB = entry.getValue().get(action.getUserId());
@@ -105,8 +104,10 @@ public class SimilarityService {
             if (difference > 0) {
                 double oldSum = getMinWeightSum(action.getEventId(), eventB);
                 putMinWeightSum(action.getEventId(), eventB, oldSum + difference);
+                changedEvents.add(eventB);
             }
         }
+        return changedEvents;
     }
 
     public void putMinWeightSum(long eventA, long eventB, double sum) {
@@ -121,10 +122,8 @@ public class SimilarityService {
     public Double getMinWeightSum(long eventA, long eventB) {
         long first = Math.min(eventA, eventB);
         long second = Math.max(eventA, eventB);
-
-        return minWeightsSums
-                .computeIfAbsent(first, e -> new HashMap<>())
-                .getOrDefault(second, 0.0);
+        Map<Long, Double> inner = minWeightsSums.get(first);
+        return inner == null ? 0.0 : inner.getOrDefault(second, 0.0);
     }
 
 
