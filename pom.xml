@@ -74,6 +74,13 @@
 				<version>${kafka-clients.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.springframework.kafka</groupId>
+				<artifactId>spring-kafka</artifactId>
+				<version>4.0.7</version>
+				<scope>compile</scope>
+			</dependency>
+
 			<!-- OpenAPI -->
 			<dependency>
 				<groupId>org.springdoc</groupId>
