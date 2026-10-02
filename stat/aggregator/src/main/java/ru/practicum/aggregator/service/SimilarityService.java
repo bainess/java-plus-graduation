@@ -33,8 +33,8 @@ public class SimilarityService {
             return List.of();
         }
 
-        Set<Long> changedEvents = saveMinWeightsSums(action, oldWeight, newWeight);
         saveNewWeight(action);
+        Set<Long> changedEvents = saveMinWeightsSums(action, oldWeight, newWeight);
         saveEventWeightSum(action, difference);
 
 
@@ -42,8 +42,16 @@ public class SimilarityService {
 
         if (users == null) {
             eventsToRecalculate = new ArrayList<>(userActionWeights.keySet());
-        } else {
+        } else if (oldWeight == 0.0) {
             eventsToRecalculate = changedEvents;
+        } else {
+            eventsToRecalculate = new ArrayList<>();
+            for (Long eventB : userActionWeights.keySet()) {
+                if (eventA.equals(eventB)) continue;
+                if (getMinWeightSum(eventA, eventB) > 0.0) {
+                    eventsToRecalculate.add(eventB);
+                }
+            }
         }
 
         List<EventSimilarityAvro> result = new ArrayList<>();
