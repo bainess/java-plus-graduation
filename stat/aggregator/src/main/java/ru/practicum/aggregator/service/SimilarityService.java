@@ -22,10 +22,10 @@ public class SimilarityService {
 
     public List<EventSimilarityAvro> process(UserActionAvro action) {
         Long eventA = action.getEventId();
+        Map<Long, Double> users = userActionWeights.get(eventA);
 
-        double oldWeight = userActionWeights
-                .getOrDefault(eventA, Map.of())
-                .getOrDefault(action.getUserId(), 0.0);
+        double oldWeight = users == null ? 0.0 : users.getOrDefault(action.getUserId(), 0.0);
+
         double newWeight = getWeight(action.getActionType());
         double difference = newWeight - oldWeight;
 
@@ -37,13 +37,21 @@ public class SimilarityService {
         saveNewWeight(action);
         saveEventWeightSum(action, difference);
 
-        List<EventSimilarityAvro> result = new ArrayList<>();
 
-        for (Long eventB : changedEvents) {
+        Collection<Long> eventsToRecalculate;
+
+        if (users == null) {
+            eventsToRecalculate = new ArrayList<>(userActionWeights.keySet());
+        } else {
+            eventsToRecalculate = changedEvents;
+        }
+
+        List<EventSimilarityAvro> result = new ArrayList<>();
+        for (Long eventB : eventsToRecalculate) {
             if (eventA.equals(eventB)) {
                 continue;
             }
-            double score = countSimilarity(eventA,eventB);
+            double score = countSimilarity(eventA, eventB);
 
             if (score == 0.0) {
                 continue;
