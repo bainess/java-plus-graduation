@@ -41,16 +41,24 @@ public class SimilarityService {
         saveEventWeightSum(action, difference);
 
         List<EventSimilarityAvro> result = new ArrayList<>();
+
         for (Long eventB : userActionWeights.keySet()) {
             if (eventA.equals(eventB)) {
                 continue;
             }
-            double score = countSimilarity(eventA,eventB);
-            log.info("Similarity for id={}", result);
+            double score = countSimilarity(eventA, eventB);
 
+            if (score == 0.0) {
+                continue;
+            }
             long first = Math.min(eventA, eventB);
             long second = Math.max(eventA, eventB);
-
+            log.info(
+                    "Calculated similarity: eventA={}, eventB={}, score={}",
+                    eventA,
+                    eventB,
+                    score
+            );
             result.add(EventSimilarityAvro.newBuilder()
                     .setEventA(first)
                     .setEventB(second)
@@ -58,6 +66,11 @@ public class SimilarityService {
                     .setTimestamp(action.getTimestamp())
                     .build());
         }
+        log.info(
+                "Generated {} similarity events for source event={}",
+                result.size(),
+                eventA
+        );
         return result;
     }
 
@@ -73,9 +86,9 @@ public class SimilarityService {
     // взаимодействовавших с обоими сравниваемыми мероприятиями
     private void saveMinWeightsSums(UserActionAvro action, double oldWeightA, double newWeightA) {
         for (Map.Entry<Long, Map<Long, Double>> entry : userActionWeights.entrySet()) {
-            long eventB = entry.getKey();
-
-            if (action.getEventId() == eventB) {
+            Long eventB = entry.getKey();
+            Long eventA = action.getEventId();
+            if (eventA.equals(eventB)){
                 continue;
             }
             Double weightB = entry.getValue().get(action.getUserId());
