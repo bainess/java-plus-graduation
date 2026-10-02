@@ -33,8 +33,8 @@ public class SimilarityService {
             return List.of();
         }
 
-        saveNewWeight(action);
         Set<Long> changedEvents = saveMinWeightsSums(action, oldWeight, newWeight);
+        saveNewWeight(action);
         saveEventWeightSum(action, difference);
 
 
