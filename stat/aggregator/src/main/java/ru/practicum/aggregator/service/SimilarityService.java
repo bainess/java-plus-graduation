@@ -42,16 +42,8 @@ public class SimilarityService {
 
         if (users == null) {
             eventsToRecalculate = new ArrayList<>(userActionWeights.keySet());
-        } else if (oldWeight == 0.0) {
-            eventsToRecalculate = changedEvents;
         } else {
-            eventsToRecalculate = new ArrayList<>();
-            for (Long eventB : userActionWeights.keySet()) {
-                if (eventA.equals(eventB)) continue;
-                if (getMinWeightSum(eventA, eventB) > 0.0) {
-                    eventsToRecalculate.add(eventB);
-                }
-            }
+            eventsToRecalculate = changedEvents;
         }
 
         List<EventSimilarityAvro> result = new ArrayList<>();
