@@ -72,7 +72,6 @@ try {
         ProducerRecord<Long, SpecificRecordBase> record =
                 new ProducerRecord<>(
                         EVENT_SIMILARITY_TOPIC,
-                        data.getEventA(),
                         data
                 );
 
