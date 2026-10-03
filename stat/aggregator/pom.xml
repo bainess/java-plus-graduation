@@ -48,10 +48,12 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- Kafka -->
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
+
     </dependencies><build>
     <plugins>
         <plugin>
