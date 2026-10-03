@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.WakeupException;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import ru.practicum.aggregator.service.SimilarityService;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
@@ -17,7 +16,6 @@ import ru.practicum.ewm.stats.avro.UserActionAvro;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Component
@@ -26,7 +24,7 @@ public class UserActionConsumer {
     private static final String USER_ACTIONS_TOPIC = "stats.user-actions.v1";
     private static final String EVENT_SIMILARITY_TOPIC = "stats.events-similarity.v1";
     private final KafkaConsumer<Long, SpecificRecordBase> kafkaConsumer;
-    private final KafkaTemplate<Long, SpecificRecordBase> producer;
+    private final KafkaProducer<Long, SpecificRecordBase> producer;
     private final SimilarityService service;
 
     public void start() {
@@ -63,7 +61,7 @@ try {
     } finally {
         kafkaConsumer.close();
         log.info("Consumer closed");
-        producer.destroy();
+        producer.close();
         log.info("Producer closed");
     }
 }
@@ -76,19 +74,12 @@ try {
                         data
                 );
 
-        try{
-            producer.send(record).get();
-            log.info(
-                    "Similarity sent: eventA={}, eventB={}, score={}",
-                    data.getEventA(),
-                    data.getEventB(),
-                    data.getScore()
-            );
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Sending similarity was interrupted", e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException("Failed to send similarity", e);
-        }
+        producer.send(record, (metadata, exception) -> {
+            if (exception != null) {
+                log.error("Fixing similarity error while sending info", exception);
+                return;
+            }
+            log.info("Similarity sent in partition: {}, offset: {}", metadata.partition(), metadata.offset());
+        });
     }
 }
