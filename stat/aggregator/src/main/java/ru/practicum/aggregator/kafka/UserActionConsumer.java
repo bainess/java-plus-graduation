@@ -56,14 +56,10 @@ try {
 } catch (Exception e) {
     log.error("Handling event error", e);
 } finally {
-    try {
-        producer.flush();
-    } finally {
         kafkaConsumer.close();
         log.info("Consumer closed");
         producer.close();
         log.info("Producer closed");
-    }
 }
     }
 
@@ -71,6 +67,7 @@ try {
         ProducerRecord<Long, SpecificRecordBase> record =
                 new ProducerRecord<>(
                         EVENT_SIMILARITY_TOPIC,
+                        data.getEventA(),
                         data
                 );
 
@@ -81,5 +78,6 @@ try {
             }
             log.info("Similarity sent in partition: {}, offset: {}", metadata.partition(), metadata.offset());
         });
+        producer.flush();
     }
 }
