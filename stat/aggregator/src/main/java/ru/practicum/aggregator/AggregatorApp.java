@@ -4,14 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ConfigurableApplicationContext;
-import ru.practicum.aggregator.kafka.UserActionConsumer;
+
 
 @SpringBootApplication(scanBasePackages = "ru.practicum.aggregator")
 @ConfigurationPropertiesScan
 public class AggregatorApp {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(AggregatorApp.class, args);
-        UserActionConsumer consumer = context.getBean(UserActionConsumer.class);
+        AggregationStarter consumer = context.getBean(AggregationStarter.class);
         consumer.start();
     }
 }
