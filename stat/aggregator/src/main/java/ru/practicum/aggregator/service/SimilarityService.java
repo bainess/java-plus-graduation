@@ -144,7 +144,6 @@ public class SimilarityService {
 
     }
 
-
     // считает и сохраняет новые веса в userActionWeights
     private void saveNewWeight(UserActionAvro userAction) {
         userActionWeights
