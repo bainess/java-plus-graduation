@@ -30,52 +30,50 @@ public class SimilarityService {
         double difference = newWeight - oldWeight;
 
         if (newWeight <= oldWeight) {
+            log.info("Weight not increased for user={}, event={}: old={}, new={}",
+                    action.getUserId(), eventA, oldWeight, newWeight);
             return List.of();
         }
 
-        Set<Long> changedEvents = saveMinWeightsSums(action, oldWeight, newWeight);
-        saveNewWeight(action);
-        saveEventWeightSum(action, difference);
-
-
-        Collection<Long> eventsToRecalculate;
-
-        if (users == null) {
-            eventsToRecalculate = new ArrayList<>(userActionWeights.keySet());
-        } else {
-            eventsToRecalculate = changedEvents;
+        Map<Long, Double> oldScores = new HashMap<>();
+        for (Map.Entry<Long, Map<Long, Double>> entry : userActionWeights.entrySet()) {
+            Long eventB = entry.getKey();
+            if (eventA.equals(eventB)) continue;
+            if (!entry.getValue().containsKey(action.getUserId())) continue;
+            oldScores.put(eventB, countSimilarity(eventA, eventB));
         }
 
-        List<EventSimilarityAvro> result = new ArrayList<>();
-        for (Long eventB : eventsToRecalculate) {
-            if (eventA.equals(eventB)) {
-                continue;
-            }
-            double score = countSimilarity(eventA, eventB);
+        saveNewWeight(action);
+        Set<Long> changedEvents = saveMinWeightsSums(action, oldWeight, newWeight);
+        saveEventWeightSum(action, difference);
 
-            if (score == 0.0) {
+        List<EventSimilarityAvro> result = new ArrayList<>();
+        for (Map.Entry<Long, Double> entry : oldScores.entrySet()) {
+            Long eventB = entry.getKey();
+            double oldScore = entry.getValue();
+            double newScore = countSimilarity(eventA, eventB);
+
+            // Если score не изменился — не генерируем событие
+            if (Math.abs(newScore - oldScore) < 1e-9) {
                 continue;
             }
+
             long first = Math.min(eventA, eventB);
             long second = Math.max(eventA, eventB);
-            log.info(
-                    "Calculated similarity: eventA={}, eventB={}, score={}",
-                    eventA,
-                    eventB,
-                    score
-            );
+
+            log.info("Calculated similarity: eventA={}, eventB={}, oldScore={}, newScore={}",
+                    first, second, oldScore, newScore);
+
             result.add(EventSimilarityAvro.newBuilder()
                     .setEventA(first)
                     .setEventB(second)
-                    .setScore(score)
+                    .setScore(newScore)
                     .setTimestamp(action.getTimestamp())
                     .build());
         }
-        log.info(
-                "Generated {} similarity events for source event={}",
-                result.size(),
-                eventA
-        );
+
+        log.info("Generated {} similarity events for source event={}, user={}",
+                result.size(), eventA, action.getUserId());
         return result;
     }
 
