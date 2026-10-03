@@ -17,7 +17,7 @@ public class UserEventService {
     private final UserActionRepository repository;
 
     public UserAction saveUserAction(UserActionAvro avro) {
-        Optional<UserAction>  oldAction = repository.findByUserIdAndEventId(avro.getUserId(), avro.getEventId());
+        Optional<UserAction> oldAction = repository.findByUserIdAndEventId(avro.getUserId(), avro.getEventId());
 
         if (oldAction.isEmpty()) {
             UserAction action = mapper.mapToUserAction(avro);
@@ -26,7 +26,7 @@ public class UserEventService {
 
         UserAction action = oldAction.get();
         double newWeight = getWeight(avro.getActionType());
-        if (newWeight  > oldAction.get().getRating()) {
+        if (newWeight > oldAction.get().getRating()) {
             oldAction.get().setRating(getWeight(avro.getActionType()));
             return repository.save(oldAction.get());
         }

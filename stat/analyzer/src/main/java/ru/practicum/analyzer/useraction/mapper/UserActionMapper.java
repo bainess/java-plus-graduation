@@ -1,6 +1,5 @@
 package ru.practicum.analyzer.useraction.mapper;
 
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Component;
 import ru.practicum.analyzer.useraction.model.UserAction;
 import ru.practicum.ewm.stats.avro.ActionTypeAvro;

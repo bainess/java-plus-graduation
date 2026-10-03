@@ -39,7 +39,7 @@ public class EventRequestServiceImpl implements EventRequestService {
 
     @Override
     public Boolean checkUserRegistered(Long eventId, Long userId) {
-       return eventRequestRepository.existsByRequesterIdAndEventId(userId, eventId);
+        return eventRequestRepository.existsByRequesterIdAndEventId(userId, eventId);
     }
 
     @Override

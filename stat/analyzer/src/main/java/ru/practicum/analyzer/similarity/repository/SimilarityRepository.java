@@ -11,12 +11,12 @@ import java.util.Optional;
 public interface SimilarityRepository extends JpaRepository<EventSimilarity, Long> {
 
     @Query("""
-    SELECT es
-    FROM EventSimilarity es
-    WHERE es.eventA = :eventId
-       OR es.eventB = :eventId
-    ORDER BY es.score DESC
-    """)
+            SELECT es
+            FROM EventSimilarity es
+            WHERE es.eventA = :eventId
+               OR es.eventB = :eventId
+            ORDER BY es.score DESC
+            """)
     List<EventSimilarity> findSimilarEvents(
             @Param("eventId") long eventId
     );

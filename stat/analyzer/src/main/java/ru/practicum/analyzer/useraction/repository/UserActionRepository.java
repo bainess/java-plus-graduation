@@ -1,10 +1,8 @@
 package ru.practicum.analyzer.useraction.repository;
 
-import org.checkerframework.checker.units.qual.N;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import ru.practicum.analyzer.useraction.model.UserAction;
 
 import java.time.Instant;
@@ -25,6 +23,7 @@ public interface UserActionRepository extends JpaRepository<UserAction, Long> {
             long userId,
             List<Long> eventIds
     );
+
     Optional<UserAction> findByUserIdAndEventId(long userId, long eventId);
 
     List<UserAction> findByUserIdOrderByTimestampDesc(

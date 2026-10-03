@@ -246,23 +246,6 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
     }
 
-//    private Map<Long, Long> getViewsMap(List<Event> events) {
-//        if (events.isEmpty()) return Collections.emptyMap();
-//
-//        List<String> uris = events.stream()
-//                .map(e -> "/events/" + e.getId())
-//                .collect(Collectors.toList());
-//
-//        LocalDateTime start = events.stream()
-//                .map(Event::getCreatedOn)
-//                .min(LocalDateTime::compareTo)
-//                .orElse(LocalDateTime.now().minusYears(10));
-//
-//        Map<Long, Long> viewsMap = new HashMap<>();
-//
-//        return viewsMap;
-//    }
-
     private Map<Long, Long> getConfirmedRequests(List<Event> events) {
         if (events.isEmpty()) return Collections.emptyMap();
         List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());

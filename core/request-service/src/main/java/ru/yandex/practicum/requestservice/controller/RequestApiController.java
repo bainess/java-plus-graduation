@@ -26,6 +26,6 @@ public class RequestApiController {
     @GetMapping("/api/requests/{eventId}/{userId}")
     Boolean isRegistered(@PathVariable("eventId") long eventId,
                          @PathVariable("userId") long userId) {
-       return eventRequestService.checkUserRegistered(eventId, userId);
+        return eventRequestService.checkUserRegistered(eventId, userId);
     }
 }

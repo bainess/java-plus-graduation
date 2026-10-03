@@ -66,20 +66,13 @@ public class AggregationStarter {
             }
 
         } catch (WakeupException ignored) {
-            // игнорируем - закрываем консьюмер и продюсер в блоке finally
         } catch (Exception e) {
             log.error("Ошибка во время обработки событий после действий пользователей", e);
         } finally {
 
             try {
-                // Перед тем, как закрыть продюсер и консьюмер, нужно убедиться,
-                // что все сообщения, лежащие в буффере, отправлены и
-                // все оффсеты обработанных сообщений зафиксированы
-
-                // здесь нужно вызвать метод продюсера для сброса данных в буффере
                 producer.flush();
                 log.debug("Produces flushes...");
-                // здесь нужно вызвать метод консьюмера для фиксации смещений
                 consumer.commitSync();
                 log.debug("Consumer make commit Sync method");
 
