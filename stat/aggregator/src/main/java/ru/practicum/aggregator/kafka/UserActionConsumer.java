@@ -34,7 +34,9 @@ try {
     while (true) {
         ConsumerRecords<Long, SpecificRecordBase> records =
                 kafkaConsumer.poll(Duration.ofMillis(100));
-
+        if (records.isEmpty()) {
+            continue;
+        }
         for (ConsumerRecord<Long, SpecificRecordBase> record : records) {
             UserActionAvro action = (UserActionAvro) record.value();
 
@@ -42,15 +44,18 @@ try {
                     action.getUserId(), action.getEventId(), action.getActionType(), action.getTimestamp());
 
             List<EventSimilarityAvro> similarities = service.process(action);
-            if (similarities.isEmpty()) {
-                continue;
-            }
+
 
             for (EventSimilarityAvro data : similarities) {
                 sendSimilarityData(data);
             }
         }
-        kafkaConsumer.commitSync();
+        try {
+            kafkaConsumer.commitSync();
+        } catch (org.apache.kafka.clients.consumer.CommitFailedException e) {
+            log.warn("Offset commit failed (rebalance in progress), will re-read", e);
+            // не роняем consumer — Kafka сама перечитает после ребаланса
+        }
     }
 } catch (WakeupException ignored) {
 } catch (Exception e) {
