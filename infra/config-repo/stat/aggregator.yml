@@ -15,6 +15,9 @@ kafka:
     group-id: aggregator-group
     auto-offset-reset: latest
     enable-auto-commit: false
+    topic: stats.user-actions.v1
+  producer:
+    topic: stats.events-similarity.v1
 
 logging:
   level:

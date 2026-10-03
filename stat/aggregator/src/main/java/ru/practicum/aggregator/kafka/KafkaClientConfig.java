@@ -23,7 +23,7 @@ public class KafkaClientConfig {
     private String KAFKA_BOOTSTRAP_SERVERS;
     @Value("${kafka.consumer.group-id}")
     private String KAFKA_CONSUMER_GROUP_ID;
-    @Value("${kafka.auto-offset-reset}")
+    @Value("${kafka.consumer.auto-offset-reset}")
     private String KAFKA_AUTO_OFFSET_RESET_CONFIG;
 
     @Bean
