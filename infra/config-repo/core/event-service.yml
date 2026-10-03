@@ -38,10 +38,22 @@ resilience4j:
       default:
         timeout-duration: 3s
 
-stats-server:
-    id: stats-server
-management:
-  endpoints:
-    web:
-      exposure:
-        include=health,info:
+#grpc:
+#  client:
+#    analyzer: # <- должно соответствовать значению в @GrpcClient
+#      address: 'discovery:///analyzer-server' # адрес gRPC-сервиса
+#      enableKeepAlive: true
+#      keepAliveWithoutCalls: true
+#      negotiationType: plaintext
+grpc:
+  client:
+    analyzer:
+      address: 'discovery:///analyzer'
+      negotiationType: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext

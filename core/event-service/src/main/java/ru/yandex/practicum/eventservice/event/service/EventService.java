@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 public interface EventService {
+    void saveEventLike(Long eventId, Long userId);
+
+    List<EventShortDto> getRecommendations(long userId);
+
     EventFullDto addEvent(Long userId, NewEventDto newEventDto);
 
     List<EventShortDto> getEvents(Long userId, int from, int size);
@@ -18,7 +22,7 @@ public interface EventService {
 
     List<EventShortDto> getEventsPublic(EventSearchParams params);
 
-    EventFullDto getEventPublic(Long eventId);
+    EventFullDto getEventPublic(Long eventId, Long userId);
 
     List<EventFullDto> getEventsByAdmin(EventSearchParamsAdmin params);
 

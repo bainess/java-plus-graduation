@@ -22,4 +22,10 @@ public class RequestApiController {
     public List<ConfirmedRequestsCount> getConfirmedRequestsByEventIds(@RequestParam List<Long> eventIds) {
         return eventRequestService.getConfirmedRequestsByEventIds(eventIds);
     }
+
+    @GetMapping("/api/requests/{eventId}/{userId}")
+    Boolean isRegistered(@PathVariable("eventId") long eventId,
+                         @PathVariable("userId") long userId) {
+        return eventRequestService.checkUserRegistered(eventId, userId);
+    }
 }

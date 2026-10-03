@@ -30,7 +30,7 @@ public final class EventMapper {
         return event;
     }
 
-    public static EventFullDto toFullDto(Event event, Long confirmedRequests, Long views) {
+    public static EventFullDto toFullDto(Event event, Long confirmedRequests) {
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -47,12 +47,11 @@ public final class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
-                .views(views != null ? views : 0L)
                 .build();
     }
 
     public static EventFullDto toFullDto(Event event) {
-        return toFullDto(event, 0L, 0L);
+        return toFullDto(event, 0L);
     }
 
     public static EventShortDto toShortDto(Event event, Long confirmedRequests, Long views) {
@@ -65,7 +64,6 @@ public final class EventMapper {
                 .initiator(event.getInitiator())
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(views != null ? views : 0L)
                 .build();
     }
 

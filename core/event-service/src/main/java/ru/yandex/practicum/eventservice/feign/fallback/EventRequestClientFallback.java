@@ -30,6 +30,12 @@ public class EventRequestClientFallback implements FallbackFactory<EventRequestC
                 log.warn("FALLBACK: Request service is not available for countConfirmedRequestsByEventIds() for event id={}", eventIds.toString(), cause);
                 return List.of();
             }
+
+            @Override
+            public Boolean isRegistered(long eventId, long userId) {
+                log.warn("FALLBACK: Request Service is not available. Cannot handle isRegistered request for eventId={}, userId={}", eventId, userId);
+                return null;
+            }
         };
     }
 }

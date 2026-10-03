@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Import;
 import ru.practicum.explorewithme.shareddto.exception.ErrorHandler;
 
-@SpringBootApplication(scanBasePackages = {"ru.yandex.practicum.requestservice"})
+@SpringBootApplication(scanBasePackages = {"ru.yandex.practicum.requestservice", "ru.practicum.explorewithme"})
 @EnableFeignClients
 @Import(ErrorHandler.class)
 public class RequestServiceApp {
