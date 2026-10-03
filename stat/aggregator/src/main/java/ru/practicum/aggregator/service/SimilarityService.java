@@ -103,6 +103,8 @@ public class SimilarityService {
                 continue;
             }
 
+            changedEvents.add(eventB);
+
             double olnMin = Math.min(oldWeightA, weightB);
             double newMin = Math.min(newWeightA, weightB);
 

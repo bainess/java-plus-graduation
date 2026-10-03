@@ -23,8 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class AggregationStarter {
-    private final Producer<Void, SpecificRecord> producer;
-    private final Consumer<Void, UserActionAvro> consumer;
+    private final Producer<String, SpecificRecord> producer;
+    private final Consumer<Long, UserActionAvro> consumer;
     private final SimilarityService service;
 
     @Value("${kafka.consumer.topic}")
@@ -34,34 +34,28 @@ public class AggregationStarter {
 
     private final Duration CONSUME_ATTEMPT_TIMEOUT = Duration.ofMillis(1000);
 
-    /**
-     * Метод для начала процесса агрегации данных.
-     * Подписывается на топики для получения событий от датчиков,
-     * формирует снимок их состояния и записывает в кафку.
-     */
     public void start() {
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
         try {
 
-            // ... подготовка к обработке данных ...
-            // ... например, подписка на топик ...
             consumer.subscribe(List.of(KAFKA_USER_ACTION_TOPIC));
 
-            // Цикл обработки событий
+
             while (true) {
-                // ... реализация цикла опроса ...
-                // ... и обработка полученных данных ...
-                ConsumerRecords<Void, UserActionAvro> records = consumer.poll(CONSUME_ATTEMPT_TIMEOUT);
+
+                ConsumerRecords<Long, UserActionAvro> records = consumer.poll(CONSUME_ATTEMPT_TIMEOUT);
                 if (records.count() > 0) {
                     log.debug("Получено {} сообщений за один poll", records.count());
                 }
-                for (ConsumerRecord<Void, UserActionAvro> record : records) {
+                for (ConsumerRecord<Long, UserActionAvro> record : records) {
                     log.debug("Event with: topic - {}, offset - {}, value - {}", record.topic(), record.offset(), record.value());
                     List<EventSimilarityAvro> recalculatedEventsSimilarities = service.process(record.value());
                     if (!recalculatedEventsSimilarities.isEmpty()) {
                         log.debug("Коэффициенты схожести пересчитаны");
                         for (EventSimilarityAvro similarity : recalculatedEventsSimilarities) {
-                            ProducerRecord<Void, SpecificRecord> producerRecord = new ProducerRecord<>(KAFKA_EVENTS_SIMILARITY_TOPIC, similarity);
+                            ProducerRecord<String, SpecificRecord> producerRecord = new ProducerRecord<>(KAFKA_EVENTS_SIMILARITY_TOPIC,
+                                    String.valueOf(similarity.getEventA()) + "_"+ String.valueOf(similarity.getEventB())
+                                    ,similarity);
                             producer.send(producerRecord);
                             log.debug("Коэффициент схожести {} между событиями {} и {} отправлен в кафку",
                                     similarity.getScore(), similarity.getEventA(), similarity.getEventB());
