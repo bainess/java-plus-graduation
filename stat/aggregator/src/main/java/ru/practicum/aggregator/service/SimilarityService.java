@@ -37,7 +37,6 @@ public class SimilarityService {
         saveNewWeight(action);
         saveEventWeightSum(action, difference);
 
-
         Collection<Long> eventsToRecalculate;
 
         if (users == null) {
